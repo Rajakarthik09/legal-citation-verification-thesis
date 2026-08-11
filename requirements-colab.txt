@@ -1,0 +1,25 @@
+# Colab stack — pin numpy<2 (pyarrow/datasets break on numpy 2.x + force-reinstall)
+numpy>=1.26.0,<2.0.0
+pyarrow>=14.0.0,<18.0.0
+pandas>=2.0.0,<2.3.0
+
+# multi_lexsum requires datasets 3.x (loading scripts removed in 4.x)
+datasets>=2.16.0,<4.0.0
+huggingface_hub
+transformers>=4.40.0
+torch
+accelerate
+sentencepiece
+eyecite>=2.6.0
+requests
+pyyaml
+python-dotenv
+tenacity
+rapidfuzz
+tqdm
+matplotlib
+rouge-score
+bert-score
+scipy>=1.11.0,<1.16.0
+statsmodels
+seaborn

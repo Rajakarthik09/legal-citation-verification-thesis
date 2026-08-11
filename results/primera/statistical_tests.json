@@ -1,0 +1,25 @@
+{
+  "hr_reduction": {
+    "absolute_reduction": 0.14,
+    "relative_reduction_pct": 71.7948717948718,
+    "mean_hr_draft": 0.195,
+    "mean_hr_final": 0.055
+  },
+  "mcnemar": {
+    "n_paired_citations": 29,
+    "draft_hallucinated_final_success": 16,
+    "draft_ok_final_bad": 0,
+    "draft_only_hallucinated": 16,
+    "final_only_hallucinated": 0,
+    "p_value": 3.0517578125e-05,
+    "interpretation": "Significant reduction in hallucination"
+  },
+  "rouge_variant": "rougeLsum",
+  "rouge_ci": {
+    "mean_delta": -0.0005069543435954329,
+    "ci_low": -0.0008953451526782605,
+    "ci_high": -0.00019779879534818635,
+    "n": 100,
+    "ci_level": 0.95
+  }
+}

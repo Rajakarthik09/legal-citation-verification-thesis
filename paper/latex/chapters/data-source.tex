@@ -1,0 +1,37 @@
+\label{ch:data-source}
+\section{Primary Dataset: Multi-LexSum}
+\label{sec:data-multilexsum}
+
+This thesis uses Multi-LexSum as the primary benchmark for legal case summarization \cite{shen2022multilexsum}. Multi-LexSum is derived from the Civil Rights Litigation Clearinghouse (CRLC) workflow and provides expert-authored summaries at multiple granularities over long, heterogeneous multi-document sources. The paper reports average source lengths above 75{,}000 words and cases that often exceed 200 pages \cite{shen2022multilexsum}; Chapter~\ref{ch:eda} re-examines these claims on the released Hugging Face layout (one row per case; 4{,}539 cases).
+
+Multi-LexSum provides three target granularities with paper-reported average lengths:
+\begin{itemize}
+  \item \textbf{Tiny} summaries ($\approx$25 words),
+  \item \textbf{Short} summaries ($\approx$130 words),
+  \item \textbf{Long} summaries ($\approx$650 words).
+\end{itemize}
+Exploratory analysis (Chapter~\ref{ch:eda}) shows that long summaries are available for all cases, whereas short and tiny summaries are partially missing. Primary experiments therefore prioritize $D\rightarrow L$.
+
+The dataset is stored locally under \texttt{code/data/} ($\sim$5.9\,GB) and loaded via the project package. Summaries and metadata are released under \textbf{CC BY-NC}; generated audit samples remain internal to coursework per license constraints.
+
+\subsection{Why this corpus}
+Multi-LexSum is chosen because it simultaneously stresses (i)~long multi-document abstraction, (ii)~expert reference summaries for ROUGE-style scoring, and (iii)~citation-bearing legal prose in which hallucination is professionally meaningful. Citation recommendation datasets \cite{farber2020citation} answer a different question (suggesting cites) and do not evaluate whether a generated summary invents authorities. Property (iii) is not incidental: Chapter~\ref{ch:eda} measures heuristic case-citation density directly in the expert summaries themselves (Table~\ref{tab:citation-density}) and finds it concentrated almost entirely in the long granularity (1.43 mean citation-like hits per summary, 37.1\% of long summaries containing at least one, versus under 10\% for short and tiny). A corpus where citations were rare or evenly spread across granularities would not support a citation-faithfulness study at any useful scale; Multi-LexSum's long summaries are citation-dense enough that a fixed evaluation subset can be drawn specifically for citation richness (Section~\ref{sec:eval-case-selection}).
+
+\subsection{Case selection for evaluation}
+\label{sec:eval-case-selection}
+Full-scale evaluation (Chapter~\ref{ch:evaluation-method}) does not sample uniformly at random from the test split. Because paired HR is only informative on cases that actually contain citations to hallucinate or verify, the evaluation set is the 100 test-split cases with the highest heuristic citation density (the same regex proxy used for Table~\ref{tab:citation-density}), fixed once and reused identically across all three Module~A generators (Section~\ref{sec:module-a-crossmodel}) so that generator comparisons are not confounded by different case sets. This is a deliberate stress test, not a claim of representativeness: it reports how the pipeline performs where citations are dense, which is also where a hallucination is most likely and most consequential, rather than an unconditional average over cases that may contain no checkable citations at all.
+
+\section{External Verification Resource: CourtListener}
+\label{sec:data-courtlistener}
+
+The symbolic verifier uses the \textbf{CourtListener API} operated by the Free Law Project for U.S.\ case-law citation lookup \cite{courtlistener_api,freelawproject}. Citation strings are extracted with eyecite \cite{eyecite2021} before lookup. This stack is preferred over closed commercial oracles because it supports reproducible science, per-citation explanations, and offline caching under documented rate limits: concretely, the evaluation account's confirmed access level of 10 requests/minute, 100/hour, and 250/day (Section~\ref{sec:module-c}), which the implementation treats as a hard operating constraint rather than a soft target.
+
+\section{Manually Labeled Audit Subset}
+\label{sec:audit-subset}
+
+To support hallucination measurement and error analysis, a stratified subset of 200 generated summaries, drawn from the validation and test splits and seeded for reproducibility, is reserved for manual review to (i)~validate extraction behaviour and (ii)~spot-check automated labels (fabricated cites vs.\ soft mismatches vs.\ Ambiguous identity clashes). The EDA pipeline exports \texttt{sample\_indices.csv} for reproducible stratified sampling, and the evaluation harness separately exports a manual-labelling template for this 200-case pool. Automated RQ answers remain distinct from manual audit labels; the audit is a validity check on the automated taxonomy, not an input to RQ1--RQ3 scoring.
+
+\section{Connection to Exploratory Analysis and Methodology}
+\label{sec:data-bridge}
+
+Chapter~\ref{ch:eda} quantifies corpus shape, truncation risk, and citation density that motivate $D\rightarrow L$ and untrusted drafts. Chapter~\ref{ch:methodology} then specifies how Multi-LexSum inputs and CourtListener responses are wired into Modules~A--C and the correction loop.

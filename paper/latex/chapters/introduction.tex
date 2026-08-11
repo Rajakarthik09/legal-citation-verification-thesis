@@ -1,0 +1,63 @@
+\section{Background}
+\label{sec:intro-background}
+
+Legal research is moving toward large language models, and that move carries a contradiction common to other high-stakes domains. These systems generate fluent text at unprecedented scale, and fluency is a poor proxy for reliability. Ankur Mali's dual-system thesis on industrial predictive maintenance argued that neural pattern recognition needs deliberative, domain-constrained reasoning to check it before any action follows. Legal summarization faces the same accountability gap. Behind every docket sits a physical litigation history. Behind every citation string sits a claim that a specific authority exists and says what the summary claims it says.
+
+Legal practitioners, researchers, and non-specialist users increasingly rely on AI systems to search, summarize, and synthesize case records that routinely run hundreds of pages \cite{shen2022multilexsum}. Legal AI carries a professional constraint most consumer NLP applications do not: a fabricated or incorrect case citation can mislead courts, contaminate memoranda, and erode trust in automated tools \cite{dahl2024largelegalfictions,magesh2025hallucinationfree,lai2023llmslegal}.
+
+This is a difference in kind, not degree, from other high-stakes NLP applications. A hallucinated statistic in a business report is wrong in isolation. A hallucinated case citation carries the rhetorical form of an authority: a specific court, at a specific time, deciding a specific question the way the summary claims. Legal reasoning runs on precedent, so a citation serves as the claim's evidentiary support, not decoration. A summarization system that gets the prose right but invents the authority produces a document that argues from evidence that does not exist. That distinction carries professional consequences, and disciplinary ones for a filed document.
+
+\section{Problem Statement}
+\label{sec:intro-problem}
+
+Empirical work documents hallucination as a routine failure mode. When asked verifiable questions about federal court cases, public LLMs hallucinate at reported rates between 58\% and 88\% depending on the model \cite{dahl2024largelegalfictions}. Commercial retrieval-augmented legal research tools still hallucinate between 17\% and 33\% of the time in a preregistered evaluation \cite{magesh2025hallucinationfree}. Summarization raises the stakes further. Users often treat a summary as a substitute for reading the record, so a single invented authority can propagate into downstream reasoning.
+
+Retrieval alone does not close this gap, and closing it is the central problem this thesis addresses. Grounding a model in retrieved passages constrains what it can draw from, but says nothing about what it asserts: a model can still misattribute a real holding to the wrong case, invent a plausible-sounding reporter string, or carry over a citation's party names while getting its year wrong. Magesh et al.'s 17--33\% figure for commercial RAG-based legal tools is itself evidence that retrieval reduces the problem without eliminating it \cite{magesh2025hallucinationfree}. Those systems need a check performed \emph{after} generation, against an authoritative source that can answer yes or no to a specific citation claim. That check is the gap this thesis's generate--verify--correct design targets.
+
+Automatic summarization metrics systematically overestimate usefulness. Multi-LexSum reports competitive ROUGE for PRIMERA on document-to-long summarization while human faithfulness ratings for generations remain low, 0.43 on a 0--3 scale \cite{shen2022multilexsum}. Faithfulness studies in general-domain summarization show the same decoupling between overlap metrics and factuality \cite{maynez2020faithfulness,pagnoni2021factuality,kryscinski2020evaluating,honovich2022true}. The practical problem is how to make citation-bearing legal summaries \emph{auditable}, a different question from how to raise ROUGE.
+
+\section{Motivation}
+\label{sec:intro-motivation}
+
+Retrieval-Augmented Generation (RAG) improves grounding on knowledge-intensive tasks \cite{lewis2020rag}, but retrieval alone does not certify that a generated citation string is canonical. Detection-only methods flag risk without repairing the summary \cite{noel2025hallugraph,manakul2023selfcheckgpt}. This thesis builds a generate--verify--correct loop instead: neural abstraction stays in the pipeline, but case citations get checked against an open legal database (CourtListener) using eyecite extraction \cite{courtlistener_api,eyecite2021}, and corrections privilege safety over aggressive rewriting.
+
+\section{Research Aim}
+\label{sec:intro-aim}
+
+The overall aim is to design and evaluate a dual-system, neuro-symbolic pipeline for legal case summarization that verifies and corrects hallucinated case citations while preserving summarization quality on Multi-LexSum. Chapter~\ref{ch:research-gap} states the research questions, objectives, and falsifiable success criteria.
+
+\section{Contributions Through Methodology}
+\label{sec:intro-contrib}
+
+At the stage documented in this thesis draft, the following contributions are complete:
+\begin{itemize}
+  \item A structured literature review across legal summarization, legal hallucinations, retrieval/verification, hallucination detection, and neuro-symbolic integration (Chapter~\ref{ch:lit-review}).
+  \item Formalization of research gaps, RQ1--RQ3, and evaluation hypotheses aligned with \emph{paired} citation metrics (Chapter~\ref{ch:research-gap}).
+  \item Selection of Multi-LexSum and CourtListener, with license and audit-subset planning (Chapter~\ref{ch:data-source}).
+  \item A reproducible exploratory data analysis over 4{,}539 cases that motivates $D\rightarrow L$ prioritization and untrusted-draft assumptions (Chapter~\ref{ch:eda}).
+  \item An implemented methodology: PRIMERA drafts; eyecite full-span extraction; CourtListener labelling; symbolic correction with Ambiguous leave/re-anchor policy; paired hallucination rate (Chapter~\ref{ch:methodology}). Two further generators, an LLM zero-shot variant and an LLM+retrieval variant, extend this to test whether the design generalizes beyond one checkpoint (Section~\ref{sec:module-a-crossmodel}).
+  \item A finalized evaluation protocol (conditions, metrics, and statistical tests) covering all three generators (Chapter~\ref{ch:evaluation-method}).
+  \item Full-scale execution of that protocol: complete, statistically significant runs for all three generators ($n=100$ each), with results, cross-generator comparison, and qualitative error analysis reported and interpreted (Chapter~\ref{ch:results}, Chapter~\ref{ch:discussion}).
+  \item A stated set of contributions, limitations, and future work. Two human-in-the-loop validation steps, a manual taxonomy audit and a corrected-summary readability evaluation, remain open (Chapter~\ref{ch:conclusion}).
+\end{itemize}
+
+\section{Research Significance}
+\label{sec:intro-significance}
+
+The thesis makes three kinds of contribution. Scientifically, it connects faithfulness evaluation \cite{maynez2020faithfulness,pagnoni2021factuality} to an operational legal citation oracle, not just NLI proxies. Professionally, it argues that closed tools' ``hallucination-free'' marketing claims should give way to open, per-citation audit trails. The methodological contribution runs deeper: exploratory analysis on a long-document legal corpus changes system design, because truncation is a reason to distrust end-to-end neural faithfulness, not a footnote to skip past.
+
+\section{Thesis Outline}
+\label{sec:intro-outline}
+
+\begin{itemize}
+  \item \textbf{Chapter~\ref{ch:lit-review}} reviews related work and synthesizes comparative gaps.
+  \item \textbf{Chapter~\ref{ch:research-gap}} states gaps, objectives, and RQ1--RQ3.
+  \item \textbf{Chapter~\ref{ch:data-source}} describes Multi-LexSum, CourtListener, and audit planning.
+  \item \textbf{Chapter~\ref{ch:eda}} presents exploratory analysis with figure-by-figure interpretation.
+  \item \textbf{Chapter~\ref{ch:methodology}} specifies Modules~A--C, correction, and metrics.
+  \item \textbf{Chapter~\ref{ch:evaluation-method}} outlines the evaluation protocol used to answer RQ1--RQ3.
+  \item \textbf{Chapter~\ref{ch:results}} reports full-scale results for all three generators, per research question, with cross-generator comparison and qualitative error analysis.
+  \item \textbf{Chapter~\ref{ch:discussion}} interprets those results against the research gap and literature, and states limitations and threats to validity.
+  \item \textbf{Chapter~\ref{ch:conclusion}} states contributions, answers RQ1--RQ3 directly, and sets out future work.
+\end{itemize}
+Pilot $n=10$ citation-rich runs mentioned in the methodology are development evidence only and are superseded by the full-scale, $n=100$ results in Chapter~\ref{ch:results}.

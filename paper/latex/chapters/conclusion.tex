@@ -1,0 +1,73 @@
+\label{ch:conclusion}
+
+\section{Summary of the Thesis}
+\label{sec:conc-summary}
+
+This thesis set out to design and evaluate a dual-system, neuro-symbolic pipeline for legal case summarization that verifies and corrects hallucinated case citations while preserving summarization quality on Multi-LexSum (Chapter~\ref{ch:research-gap}). The motivating problem, that legal AI systems fabricate case citations at rates between 17\% and 88\% depending on system and setting \cite{dahl2024largelegalfictions,magesh2025hallucinationfree}, and that strong overlap-based quality scores coexist with near-failing human faithfulness ratings on this exact benchmark \cite{shen2022multilexsum}, was established in Chapter~\ref{ch:lit-review} and confirmed, not merely assumed, by this thesis's own baseline measurements (Chapter~\ref{ch:results}).
+
+The five objectives set out in Chapter~\ref{ch:research-gap} are each addressed by a specific, implemented, and evaluated component of the pipeline:
+
+\begin{enumerate}
+  \item \textbf{A case-citation hallucination taxonomy} (Verified, Mismatch, Ambiguous, NotFound, Malformed) is implemented against the CourtListener API (Section~\ref{sec:module-c}) and used as the label vocabulary throughout every result in this thesis.
+  \item \textbf{A neural baseline summarizer} (PRIMERA, $D\rightarrow L$) quantifies baseline citation-hallucination behaviour (Section~\ref{sec:module-a}), and is extended with two further generators specifically to test whether that baseline behaviour is a property of the checkpoint or the task (Section~\ref{sec:module-a-crossmodel}).
+  \item \textbf{A symbolic verifier} checks every extracted citation against CourtListener with an auditable, per-citation explanation (Section~\ref{sec:module-c}), not a confidence score, but a resolvable record of what was checked and what was found.
+  \item \textbf{A bounded symbolic correction policy} redacts unverifiable citations, safely repairs soft mismatches, and leaves or re-anchors Ambiguous citations without ever substituting a contradicting case identity (Section~\ref{sec:correction}); Chapter~\ref{ch:discussion} argues this conservatism is precisely what the zero-regression result depends on.
+  \item \textbf{Evaluation with ablations and statistical testing} jointly measures faithfulness (paired HR) and quality (ROUGE-L\textsubscript{sum}, BERTScore) across four conditions and three generators, with McNemar significance testing and bootstrap confidence intervals reported for every comparison (Chapter~\ref{ch:results}).
+\end{enumerate}
+
+\section{Answers to the Research Questions}
+\label{sec:conc-rqs}
+
+\begin{itemize}
+  \item \textbf{RQ1.} Baseline summarizers hallucinate case citations at substantial rates (57.5--82.8\% paired HR across the three generators evaluated), consistent in magnitude with prior legal-QA and commercial-tool findings \cite{dahl2024largelegalfictions,magesh2025hallucinationfree}, the first evidence this thesis is aware of that the same failure mode reproduces in long-document legal summarization specifically. Critically, both the volume and the character of hallucination depend on generator choice, not on the underlying task: citation-attempt density spans a 24$\times$ range (0.29 to 6.89 per case) across the three generators evaluated.
+  \item \textbf{RQ2.} Symbolic verification plus bounded correction reduces paired HR by 56.1--71.8\% relative to baseline, significant at $p<10^{-4}$ in every generator, with zero citations made worse by correction across all 1{,}083 paired citations evaluated.
+  \item \textbf{RQ3.} Quality is preserved with wide margin in every generator: ROUGE-L\textsubscript{sum} moves by at most 0.07 percentage points against a $\pm2$pp tolerance, and BERTScore F1 by at most 0.0003. The 30\% HR-reduction target is exceeded by $1.87\times$ in the weakest case.
+\end{itemize}
+
+All three research questions are answered affirmatively, for all three generators evaluated, not only for the generator the pipeline was originally designed against.
+
+\section{Contributions}
+\label{sec:conc-contributions}
+
+Beyond implementing the objectives in Section~\ref{sec:conc-summary}, three findings in this thesis go beyond what the reviewed literature (Chapter~\ref{ch:lit-review}) establishes or predicts, and are offered as this thesis's contributions to knowledge:
+
+\begin{enumerate}
+  \item \textbf{A symbolic correction policy that generalizes across generator architecture without re-tuning.} Built and validated against PRIMERA's low-volume citation profile, the same policy achieves final HR in a narrow 22.2--27.6\% band against two LLM-based generators with a 24$\times$ higher citation volume and a materially different error-label distribution (Section~\ref{sec:disc-generalization}). No comparable cross-architecture evaluation appears in the reviewed retrieval, detection, or neuro-symbolic literature (Chapter~\ref{ch:lit-review}, Theme~2--3).
+  \item \textbf{A measured zero-regression guarantee for citation correction.} Across every generator and 1{,}083 paired citations, this thesis's correction policy never converted an already-acceptable citation into a hallucination (Table~\ref{tab:rq2-discordant}), a property detection-only baselines (HalluGraph, SelfCheckGPT) cannot be evaluated on at all, since they do not edit output, and one that follows directly from refusing to substitute a contradicting case identity (Section~\ref{sec:disc-rq2-why}).
+  \item \textbf{Identification and quantification of a citation-fabrication failure mode retrieval substantially suppresses.} Degenerate same-case citation runs, a generator inventing a sequence of plausible-looking but fabricated reporter citations to a single real case name, affect 13.7\% of LLM zero-shot's citations and are reduced to 0.7\% once source documents are ranked by citation density before truncation (Section~\ref{sec:results-qualitative}). This is a second, independent line of evidence for retrieval's value beyond the aggregate hallucination-rate reduction the literature already documents \cite{lewis2020rag,magesh2025hallucinationfree}.
+\end{enumerate}
+
+\section{Limitations}
+\label{sec:conc-limitations}
+
+Chapter~\ref{ch:discussion} (Section~\ref{sec:disc-limitations}) states this thesis's limitations in full. The central one, carried forward into Section~\ref{sec:conc-future} below, is that every result in this thesis rests on automated measurement: the CourtListener-backed taxonomy and automated quality metrics, not human judgment. The evaluation set is also a deliberate citation-dense stress test rather than a representative sample of the full test split, and the scope is Document$\rightarrow$Long summarization of U.S.\ civil-rights litigation in English.
+
+\section{Future Work}
+\label{sec:conc-future}
+
+\subsection{Immediate: human-in-the-loop validation}
+\label{sec:conc-future-human}
+
+Two pieces of human validation are the direct next steps for this work, both already scaffolded but not yet executed:
+
+\begin{itemize}
+  \item \textbf{Manual audit of the automated taxonomy.} A stratified 200-case sample is already exported (Section~\ref{sec:audit-subset}) for a human reviewer to independently label Verified/Mismatch/Ambiguous/NotFound/Malformed and compare against Module~C's automated labels. This would establish an inter-rater agreement figure between the automated taxonomy and human legal judgment: the single most direct check on whether this thesis's headline HR numbers reflect genuine citation hallucination or, in some fraction of cases, CourtListener database coverage gaps (Section~\ref{sec:disc-limitations}).
+  \item \textbf{Human readability evaluation of corrected summaries.} Redaction in particular can leave an abrupt gap in a sentence where a citation was removed; no reader-facing measurement of whether this is noticeable or objectionable exists yet. A small-scale human rating study, on readability and coherence of symbolic-condition summaries versus baseline drafts, would close this gap and give RQ3's automated quality-preservation result a human-judgment counterpart.
+\end{itemize}
+
+Both are scoped as the immediate continuation of this thesis, deferred only because they require dedicated human-annotation time beyond what the automated evaluation in Chapter~\ref{ch:results} required.
+
+\subsection{Further work}
+\label{sec:conc-future-further}
+
+\begin{itemize}
+  \item \textbf{Beyond the citation-dense subset.} Extending evaluation from the 100-case stress-test subset to the full test split would establish how paired HR and correction behaviour vary on cases with sparser gold citations, closer to a representative deployment distribution.
+  \item \textbf{Purpose-built defence against degenerate fabrication.} Section~\ref{sec:disc-limitations} notes that citation-density retrieval suppresses but does not eliminate degenerate same-case citation runs. A generation-time or extraction-time check specifically targeting repeated near-identical case names, rather than relying on retrieval as an indirect mitigation, is a natural follow-on to the finding in Section~\ref{sec:results-qualitative}.
+  \item \textbf{Broader domain and jurisdiction coverage.} This thesis evaluates U.S.\ civil-rights litigation in English against CourtListener. Extending the taxonomy and correction policy to other legal domains, jurisdictions, or case-law databases would test the generalization claim in Section~\ref{sec:disc-generalization} along a different axis than generator architecture.
+  \item \textbf{Additional generator architectures.} The cross-model result in this thesis spans one encoder-decoder summarizer and two configurations of one instruction-tuned LLM. Testing the same pipeline against further architectures would strengthen or bound the generalization claim further.
+\end{itemize}
+
+\section{Closing Statement}
+\label{sec:conc-closing}
+
+Legal AI's citation-hallucination problem will not be solved by better generation alone, nor by retrieval alone, nor by detection alone: each of those has been tried, separately, and each leaves a measurable gap (Chapter~\ref{ch:lit-review}). This thesis's contribution is a working demonstration that a comparatively simple symbolic layer, extracting every citation, checking it against an authoritative external source, and correcting conservatively, closes most of that gap, does so without a measurable quality cost, and does so consistently across generators the pipeline was never tuned against. That result rests on automated evaluation; the human-in-the-loop validation in Section~\ref{sec:conc-future-human} is what would make it a claim ready for deployment rather than a research finding.

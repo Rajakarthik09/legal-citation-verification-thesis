@@ -1,0 +1,132 @@
+{
+  "baseline": {
+    "n_cases": 100,
+    "rouge1_mean": 0.42660196440807846,
+    "rouge2_mean": 0.1716603460886497,
+    "rougeL_mean": 0.19950942219138285,
+    "rougeLsum_mean": 0.40742110092238876,
+    "hr_micro": 0.8275862068965517,
+    "hr_macro": 0.195,
+    "hr_per_case_mean": 0.195,
+    "hr_paired_micro": 0.8275862068965517,
+    "hr_paired_macro": 0.195,
+    "hr_paired_per_case_mean": 0.195,
+    "hr_surviving_micro": 0.8275862068965517,
+    "fix_rate": 0.0,
+    "removal_rate": 0.0,
+    "garbled_rate": 0.0,
+    "still_bad_rate": 0.0,
+    "total_citations": 29,
+    "total_draft_citations": 0,
+    "label_counts": {
+      "NotFound": 12,
+      "Mismatch": 9,
+      "Ambiguous": 3,
+      "Verified": 5
+    },
+    "correction_efficiency": {
+      "mean_iterations": 0.0,
+      "median_iterations": 0.0,
+      "pct_within_1": 1.0,
+      "pct_within_2": 1.0
+    },
+    "bertscore_f1_mean": 0.851081737279892
+  },
+  "flagging": {
+    "n_cases": 100,
+    "rouge1_mean": 0.42660196440807846,
+    "rouge2_mean": 0.1716603460886497,
+    "rougeL_mean": 0.19950942219138285,
+    "rougeLsum_mean": 0.40742110092238876,
+    "hr_micro": 0.8275862068965517,
+    "hr_macro": 0.195,
+    "hr_per_case_mean": 0.195,
+    "hr_paired_micro": 0.8275862068965517,
+    "hr_paired_macro": 0.195,
+    "hr_paired_per_case_mean": 0.195,
+    "hr_surviving_micro": 0.8275862068965517,
+    "fix_rate": 0.0,
+    "removal_rate": 0.0,
+    "garbled_rate": 0.0,
+    "still_bad_rate": 0.0,
+    "total_citations": 29,
+    "total_draft_citations": 0,
+    "label_counts": {
+      "NotFound": 12,
+      "Mismatch": 9,
+      "Ambiguous": 3,
+      "Verified": 5
+    },
+    "correction_efficiency": {
+      "mean_iterations": 0.0,
+      "median_iterations": 0.0,
+      "pct_within_1": 1.0,
+      "pct_within_2": 1.0
+    },
+    "bertscore_f1_mean": 0.851081737279892
+  },
+  "symbolic": {
+    "n_cases": 100,
+    "rouge1_mean": 0.426136578063318,
+    "rouge2_mean": 0.17139407452305305,
+    "rougeL_mean": 0.199503713754282,
+    "rougeLsum_mean": 0.40691414657879327,
+    "hr_micro": 0.47058823529411764,
+    "hr_macro": 0.065,
+    "hr_per_case_mean": 0.065,
+    "hr_paired_micro": 0.27586206896551724,
+    "hr_paired_macro": 0.25,
+    "hr_paired_per_case_mean": 0.055,
+    "hr_surviving_micro": 0.47058823529411764,
+    "fix_rate": 0.3103448275862069,
+    "removal_rate": 0.41379310344827586,
+    "garbled_rate": 0.0,
+    "still_bad_rate": 0.27586206896551724,
+    "total_citations": 17,
+    "total_draft_citations": 29,
+    "label_counts": {
+      "Mismatch": 5,
+      "Verified": 9,
+      "Ambiguous": 3
+    },
+    "correction_efficiency": {
+      "mean_iterations": 0.28,
+      "median_iterations": 0.0,
+      "pct_within_1": 0.95,
+      "pct_within_2": 0.95
+    },
+    "bertscore_f1_mean": 0.8508364576101303
+  },
+  "llm_rewrite": {
+    "n_cases": 100,
+    "rouge1_mean": 0.42495564315511253,
+    "rouge2_mean": 0.17105536402772625,
+    "rougeL_mean": 0.19928713634306056,
+    "rougeLsum_mean": 0.4054650331978944,
+    "hr_micro": 0.47058823529411764,
+    "hr_macro": 0.065,
+    "hr_per_case_mean": 0.065,
+    "hr_paired_micro": 0.27586206896551724,
+    "hr_paired_macro": 0.25,
+    "hr_paired_per_case_mean": 0.055,
+    "hr_surviving_micro": 0.47058823529411764,
+    "fix_rate": 0.3103448275862069,
+    "removal_rate": 0.41379310344827586,
+    "garbled_rate": 0.0,
+    "still_bad_rate": 0.27586206896551724,
+    "total_citations": 17,
+    "total_draft_citations": 29,
+    "label_counts": {
+      "Mismatch": 5,
+      "Verified": 9,
+      "Ambiguous": 3
+    },
+    "correction_efficiency": {
+      "mean_iterations": 0.28,
+      "median_iterations": 0.0,
+      "pct_within_1": 0.95,
+      "pct_within_2": 0.95
+    },
+    "bertscore_f1_mean": 0.8470497781038284
+  }
+}

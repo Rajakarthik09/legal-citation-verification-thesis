@@ -1,0 +1,17 @@
+\section{Introduction and Scope of the Review}
+
+This literature review supports a Master thesis on \emph{dual-system, hallucination-aware legal document summarization}: a neuro-symbolic pipeline that generates multi-document case summaries, verifies every extracted case citation against an external legal database (CourtListener), and applies a bounded correction loop before release \cite{courtlistener_api}. The review is organized around five strands that appear in the curated survey corpus: (i)~legal multi-document summarization and benchmarks; (ii)~empirical studies of legal hallucinations in LLMs and commercial tools; (iii)~retrieval-augmented generation and legal verification; (iv)~hallucination detection and factual-consistency evaluation; and (v)~neuro-symbolic integration as a design philosophy.
+
+\subsection{Corpus and methodology}
+
+The primary corpus comprises twelve peer-reviewed or widely cited works selected for direct relevance to Multi-LexSum-style legal summarization, citation faithfulness, and verifiable evaluation \cite{shen2022multilexsum}. Two additional works are included because they expose structural blind spots in the corpus itself: domain-adapted legal encoders \cite{chalkidis2020legalbert} and foundational evidence that overlap-based and embedding-based metrics systematically miss factual errors in abstractive summarization \cite{maynez2020faithfulness,pagnoni2021factuality}. Each paper is analyzed using a consistent protocol: problem framing, method and hidden assumptions, reported evidence, explicit limitations (including overclaiming and task mismatch), and implications for a generate--verify--correct legal summarization system.
+
+The review adopts a \emph{critical} stance. It evaluates benchmark leaderboards, vendor marketing language, and detection-only systems against what legal practitioners actually need: summaries whose \emph{case citations} can be audited against canonical records, not text that merely reads plausibly or scores well on ROUGE \cite{lin2004rouge} or BERTScore \cite{zhang2020bertscore}.
+
+\subsection{Connection to thesis research questions}
+
+The thesis is guided by three research questions: (RQ1) what types and rates of case-citation hallucinations baseline summarizers produce on Multi-LexSum; (RQ2) whether symbolic verification against CourtListener reduces hallucination rate relative to a neural-only baseline; and (RQ3) whether a full correction loop can preserve summarization quality while meeting \emph{proposed} success criteria: a relative reduction in citation-level Hallucination Rate (HR) of at least 30\% alongside ROUGE/BERTScore preservation within a $\pm$2\% band. These criteria are evaluation \emph{objectives}, not results already established in prior work. The literature reviewed here explains why such criteria matter, and why existing papers fall short of them.
+
+\subsection{Structure of the chapter}
+
+Section~\ref{sec:lit-summarization} examines legal summarization benchmarks and automatic metrics. Section~\ref{sec:lit-legal-hallucinations} profiles legal hallucinations in public and commercial systems. Section~\ref{sec:lit-rag} covers RAG and graph-based legal hallucination detection. Section~\ref{sec:lit-detection} surveys general hallucination mitigation and evaluation. Section~\ref{sec:lit-neurosymbolic} connects neuro-symbolic AI to the proposed architecture. Section~\ref{sec:lit-synthesis} provides a comparative synthesis table. Chapter~2 consolidates research gaps and thesis positioning.

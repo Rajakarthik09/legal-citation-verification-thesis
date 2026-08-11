@@ -1,0 +1,218 @@
+{
+  "presentation_label": "Full-scale evaluation — n=100 citation-rich test-split cases, D→L, LLM zero-shot (naive truncation, larger context)",
+  "partial_run": false,
+  "run_bertscore": true,
+  "RQ1": {
+    "question": "What types and frequencies of case-citation hallucinations do baseline summarizers produce?",
+    "n_cases": 100,
+    "total_citations": 365,
+    "label_counts": {
+      "Ambiguous": 94,
+      "Verified": 155,
+      "NotFound": 58,
+      "Mismatch": 58
+    },
+    "label_rates": {
+      "Ambiguous": 0.2575,
+      "Verified": 0.4247,
+      "NotFound": 0.1589,
+      "Mismatch": 0.1589
+    },
+    "hallucination_rate": 0.5753,
+    "summary": "Across 100 cases, 365 citations extracted from draft summaries. Overall HR=57.5%. Most common labels: Verified(155), Ambiguous(94), NotFound(58), Mismatch(58)."
+  },
+  "RQ2": {
+    "question": "Does symbolic verification + correction reduce HR vs neural-only baseline?",
+    "hr_baseline_paired_micro": 0.5753,
+    "hr_symbolic_paired_micro": 0.2219,
+    "hr_symbolic_surviving_micro": 0.3095,
+    "fix_rate": 0.6192,
+    "removal_rate": 0.1589,
+    "garbled_rate": 0.0,
+    "reduction": {
+      "absolute_reduction": 0.1605,
+      "relative_reduction_pct": 56.063,
+      "mean_hr_draft": 0.2864,
+      "mean_hr_final": 0.1258
+    },
+    "mcnemar_test": {
+      "n_paired_citations": 365,
+      "draft_hallucinated_final_success": 129,
+      "draft_ok_final_bad": 0,
+      "draft_only_hallucinated": 129,
+      "final_only_hallucinated": 0,
+      "p_value": 2.938735877055719e-39,
+      "interpretation": "Significant reduction in hallucination"
+    },
+    "summary": "Paired HR dropped from 57.5% (baseline) to 22.2% (symbolic correction), relative reduction 56.1%. Surviving-citation HR=31.0%. McNemar p=2.938735877055719e-39."
+  },
+  "RQ3": {
+    "question": "Can the dual-system approach preserve quality while reducing HR by >=30%?",
+    "hr_relative_reduction_pct": 56.06,
+    "hr_target_pct": 30.0,
+    "hr_target_met": true,
+    "primary_rouge_variant": "rougeLsum",
+    "rougeLsum_delta_pct_points": 0.0,
+    "rougeL_delta_pct_points": 0.03,
+    "rouge_tolerance_pct": 2.0,
+    "rouge_target_met": true,
+    "rougeLsum_bootstrap_ci": {
+      "mean_delta": 3.492804398548877e-05,
+      "ci_low": -0.000696065990224376,
+      "ci_high": 0.0009257463187758119,
+      "n": 100,
+      "ci_level": 0.95
+    },
+    "symbolic_vs_llm_rewrite": {
+      "hr_paired_symbolic": 0.2219178082191781,
+      "hr_paired_llm_rewrite": 0.2465753424657534,
+      "rougeLsum_symbolic": 0.4251790913871807,
+      "rougeLsum_llm_rewrite": 0.4245981714301553,
+      "rougeL_symbolic": 0.17820108509951552,
+      "rougeL_llm_rewrite": 0.17839480211258826
+    },
+    "summary": "Paired HR relative reduction 56.1% (target 30.0%): PASS. ROUGE-Lsum delta +0.00 pp (tolerance ±2.0): PASS."
+  },
+  "limitations": [
+    "Status: Full-scale evaluation — n=100 citation-rich test-split cases, D→L, LLM zero-shot (naive truncation, larger context)",
+    "Evaluation on test split, n=100 (not full test set).",
+    "D→L (long summaries) only; short/tiny descoped after EDA.",
+    "Primary HR is paired draft-citation HR; surviving-citation HR reported separately.",
+    "Primary quality metric is ROUGE-Lsum (sentence-split union-LCS), the variant conventionally reported for multi-sentence summarization; plain ROUGE-L is also reported but is not comparable to published summarization baselines.",
+    "CourtListener access level 10 req/min, 100/hr, 250/day; caching used; multi-day runs required at full scale.",
+    "Source truncation to the generator's context budget (known limitation).",
+    "Manual audit template exported separately; labels not included in automated RQ answers."
+  ],
+  "aggregated_metrics": {
+    "baseline": {
+      "n_cases": 100,
+      "rouge1_mean": 0.43999062416781265,
+      "rouge2_mean": 0.1536697198786801,
+      "rougeL_mean": 0.17793123205629635,
+      "rougeLsum_mean": 0.4251441633431952,
+      "hr_micro": 0.5753424657534246,
+      "hr_macro": 0.2863606694977663,
+      "hr_per_case_mean": 0.2863606694977663,
+      "hr_paired_micro": 0.5753424657534246,
+      "hr_paired_macro": 0.2863606694977663,
+      "hr_paired_per_case_mean": 0.2863606694977663,
+      "hr_surviving_micro": 0.5753424657534246,
+      "fix_rate": 0.0,
+      "removal_rate": 0.0,
+      "garbled_rate": 0.0,
+      "still_bad_rate": 0.0,
+      "total_citations": 365,
+      "total_draft_citations": 0,
+      "label_counts": {
+        "Ambiguous": 94,
+        "Verified": 155,
+        "NotFound": 58,
+        "Mismatch": 58
+      },
+      "correction_efficiency": {
+        "mean_iterations": 0.0,
+        "median_iterations": 0.0,
+        "pct_within_1": 1.0,
+        "pct_within_2": 1.0
+      },
+      "bertscore_f1_mean": 0.8330559796094894
+    },
+    "flagging": {
+      "n_cases": 100,
+      "rouge1_mean": 0.43999062416781265,
+      "rouge2_mean": 0.1536697198786801,
+      "rougeL_mean": 0.17793123205629635,
+      "rougeLsum_mean": 0.4251441633431952,
+      "hr_micro": 0.5753424657534246,
+      "hr_macro": 0.2863606694977663,
+      "hr_per_case_mean": 0.2863606694977663,
+      "hr_paired_micro": 0.5753424657534246,
+      "hr_paired_macro": 0.2863606694977663,
+      "hr_paired_per_case_mean": 0.2863606694977663,
+      "hr_surviving_micro": 0.5753424657534246,
+      "fix_rate": 0.0,
+      "removal_rate": 0.0,
+      "garbled_rate": 0.0,
+      "still_bad_rate": 0.0,
+      "total_citations": 365,
+      "total_draft_citations": 0,
+      "label_counts": {
+        "Ambiguous": 94,
+        "Verified": 155,
+        "NotFound": 58,
+        "Mismatch": 58
+      },
+      "correction_efficiency": {
+        "mean_iterations": 0.0,
+        "median_iterations": 0.0,
+        "pct_within_1": 1.0,
+        "pct_within_2": 1.0
+      },
+      "bertscore_f1_mean": 0.8330559796094894
+    },
+    "symbolic": {
+      "n_cases": 100,
+      "rouge1_mean": 0.4401053015552698,
+      "rouge2_mean": 0.1536764661348208,
+      "rougeL_mean": 0.17820108509951552,
+      "rougeLsum_mean": 0.4251790913871807,
+      "hr_micro": 0.30952380952380953,
+      "hr_macro": 0.14661012864657366,
+      "hr_per_case_mean": 0.14661012864657366,
+      "hr_paired_micro": 0.2219178082191781,
+      "hr_paired_macro": 0.2516367539270765,
+      "hr_paired_per_case_mean": 0.12581837696353826,
+      "hr_surviving_micro": 0.30952380952380953,
+      "fix_rate": 0.6191780821917808,
+      "removal_rate": 0.1589041095890411,
+      "garbled_rate": 0.0,
+      "still_bad_rate": 0.2219178082191781,
+      "total_citations": 294,
+      "total_draft_citations": 365,
+      "label_counts": {
+        "Ambiguous": 76,
+        "Verified": 203,
+        "Mismatch": 15
+      },
+      "correction_efficiency": {
+        "mean_iterations": 0.53,
+        "median_iterations": 0.0,
+        "pct_within_1": 0.9,
+        "pct_within_2": 0.91
+      },
+      "bertscore_f1_mean": 0.8329480016231536
+    },
+    "llm_rewrite": {
+      "n_cases": 100,
+      "rouge1_mean": 0.439875025694657,
+      "rouge2_mean": 0.15361437562218144,
+      "rougeL_mean": 0.17839480211258826,
+      "rougeLsum_mean": 0.4245981714301553,
+      "hr_micro": 0.3784722222222222,
+      "hr_macro": 0.16659893292981529,
+      "hr_per_case_mean": 0.16659893292981529,
+      "hr_paired_micro": 0.2465753424657534,
+      "hr_paired_macro": 0.26727744656776914,
+      "hr_paired_per_case_mean": 0.13363872328388457,
+      "hr_surviving_micro": 0.3784722222222222,
+      "fix_rate": 0.5726027397260274,
+      "removal_rate": 0.18082191780821918,
+      "garbled_rate": 0.0,
+      "still_bad_rate": 0.2465753424657534,
+      "total_citations": 288,
+      "total_draft_citations": 365,
+      "label_counts": {
+        "Ambiguous": 75,
+        "Verified": 179,
+        "Mismatch": 34
+      },
+      "correction_efficiency": {
+        "mean_iterations": 0.53,
+        "median_iterations": 0.0,
+        "pct_within_1": 0.9,
+        "pct_within_2": 0.91
+      },
+      "bertscore_f1_mean": 0.8329168504476547
+    }
+  }
+}

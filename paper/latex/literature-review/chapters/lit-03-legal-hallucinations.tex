@@ -1,0 +1,44 @@
+\section{Legal Hallucinations in Large Language Models and Commercial Tools}
+\label{sec:lit-legal-hallucinations}
+
+Legal AI failures are failures of \emph{verifiable legal reference}, not simply ``wrong answers'' in the abstract. This section examines two complementary empirical programs: open-model profiling on structured legal metadata \cite{dahl2024largelegalfictions} and preregistered audits of commercial retrieval-augmented legal research systems \cite{magesh2025hallucinationfree}. Both are essential background for the thesis, but both stop short of long-document summarization with post-hoc citation correction.
+
+\subsection{Large Legal Fictions: profiling open LLMs on verifiable queries}
+\label{sec:lit-dahl}
+
+\paragraph{Problem framing.}
+Dahl et al.\ ask whether public LLMs hallucinate on \emph{verifiable} legal facts drawn from randomly selected U.S. federal court cases \cite{dahl2024largelegalfictions}. The framing is adversarial to model marketing: if a system invents judges, dockets, or holdings when ground truth is available in the record, the system is unsafe for professional use.
+
+\paragraph{Method and assumptions.}
+The study constructs queries with known answers from case metadata (e.g., judge identity, filing year, procedural posture). Models include ChatGPT-4, Llama~2, and others. A hallucination is counted when the model's answer conflicts with the record or when it accepts user-supplied false premises, testing sycophancy as well as fabrication.
+
+\paragraph{Evidence.}
+Reported hallucination rates range from \textbf{58\%} (ChatGPT-4) to \textbf{88\%} (Llama~2) depending on model and query type \cite{dahl2024largelegalfictions}. Models often fail to self-correct when users embed incorrect legal assumptions, implying that instruction tuning alone does not produce reliable legal reasoning.
+
+\paragraph{Critical analysis.}
+The methodology is stronger than anecdotal ``ChatGPT failed my exam'' posts because ground truth is external to the model. However, the task is \textbf{short-form legal QA}, not abstractive summarization over 75k+ word dockets. Errors in QA (wrong judge name) are structurally different from errors in summaries (blending holdings across cases, omitting procedural history, citing plausible but non-existent precedents). Dahl et al.\ establish magnitude of legal unreliability but do not measure how hallucinations \emph{scale} with output length, compression ratio, or number of source documents, all central to Multi-LexSum \cite{shen2022multilexsum}. The typology of legal hallucinations is useful conceptually, yet it is not operationalized as automated labels tied to CourtListener verification in a summarization pipeline.
+
+\paragraph{Implication for this thesis.}
+The thesis treats Dahl et al.\ as proof that \emph{neural legal generation is untrusted by default}. It extends their verifiability principle from QA fields to citation-level checks on generated summaries.
+
+\subsection{Hallucination-Free? Commercial RAG tools under preregistered audit}
+\label{sec:lit-magesh}
+
+\paragraph{Problem framing.}
+Magesh et al.\ evaluate whether leading AI legal research tools are ``hallucination-free,'' as vendors imply, using a preregistered protocol on 200+ naturalistic legal queries \cite{magesh2025hallucinationfree}.
+
+\paragraph{Method and assumptions.}
+Three commercial systems (Lexis+ AI, Westlaw AI-Assisted Research, Ask Practical Law AI) are compared against general-purpose GPT-4. Hallucinations are identified when generated citations or legal statements do not match authoritative sources. The study assumes vendor RAG stacks represent the best industry practice for grounding.
+
+\paragraph{Evidence.}
+Hallucination rates remain substantial: \textbf{17\%} (Lexis+ AI), \textbf{33\%} (Westlaw AI-AR), with GPT-4 at \textbf{43\%} on comparable tasks \cite{magesh2025hallucinationfree}. RAG reduces but does not eliminate errors; marketing claims of zero hallucination are empirically false.
+
+\paragraph{Critical analysis.}
+This is among the strongest empirical rebuttals to the myth that retrieval alone solves legal AI safety. Yet the evaluation is \textbf{closed-box}: reproducibility, prompt templates, retriever indices, and correction policies are not available to researchers. Queries resemble practitioner research questions, not Multi-LexSum-style compressive summaries. A 17\% hallucination rate in a paid product is commercially alarming but academically understates risk in \emph{summarization}: summaries are consumed as substitutes for reading sources, amplifying the impact per error. The study also does not test automated \emph{correction}, only presence of hallucination in final answers.
+
+\paragraph{Implication for this thesis.}
+The thesis pursues an \textbf{open, reproducible} pipeline with explicit symbolic verification (CourtListener) and a bounded correction loop, enabling ablations that commercial systems do not permit.
+
+\subsection{Synthesis: from legal QA risk to summarization risk}
+
+Dahl and Magesh converge on a single uncomfortable conclusion: \emph{legal hallucinations are endemic} across both open weights and proprietary RAG. They diverge in experimental setting (open models on metadata QA vs.\ commercial tools on practitioner queries) and leave a shared blind spot: neither establishes error rates for \textbf{long-form, multi-document abstractive summaries} with extractable case citations, the operational surface of this thesis. The gap runs deeper than a minor extension: summarization introduces compression, paraphrase, and cross-document fusion, each a distinct mechanism for citation drift.

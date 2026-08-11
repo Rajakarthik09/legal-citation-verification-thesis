@@ -1,0 +1,29 @@
+# Module A — neural summarizer (PRIMERA)
+
+granularity: long
+num_beams: 5
+max_new_tokens:
+  long: 850
+  short: 180
+  tiny: 40
+# The checkpoint's own generation_config.json ships length_penalty=0 and no
+# min_new_tokens, which makes beam search favor short outputs (unnormalized
+# log-prob sums penalize every extra token). Measured on the n=10 pilot:
+# generated summaries averaged 461 words against an ~850-token/~650-word
+# budget -- the model was stopping itself early, not hitting the ceiling.
+# Override explicitly rather than trust the checkpoint's baked-in defaults.
+min_new_tokens:
+  long: 600
+  short: 100
+  tiny: 20
+length_penalty: 2.0
+early_stopping: false
+device: cuda
+use_fp16: true
+checkpoint_flush_every: 1
+
+checkpoints:
+  long: allenai/primera-multi_lexsum-source-long
+  short: allenai/primera-multi_lexsum-source-short
+
+output_dir: outputs/generations

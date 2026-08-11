@@ -1,0 +1,60 @@
+\section{Hallucination Detection, Factual Consistency, and Evaluation Paradigms}
+\label{sec:lit-detection}
+
+General-purpose hallucination research provides vocabulary and baselines, but legal citation faithfulness demands domain-specific operationalization. This section critically reviews SelfCheckGPT \cite{manakul2023selfcheckgpt}, the TRUE meta-evaluation benchmark \cite{honovich2022true}, and Ji et al.'s survey \cite{ji2023hallucinationsurvey}, with cross-reference to summarization-specific factuality work \cite{maynez2020faithfulness,pagnoni2021factuality}.
+
+\subsection{SelfCheckGPT: stochastic consistency as a proxy for truth}
+\label{sec:lit-selfcheck}
+
+\paragraph{Problem framing.}
+Manakul et al.\ detect hallucinations in black-box LLMs by comparing a primary answer to multiple stochastically sampled answers from the same model, without external databases \cite{manakul2023selfcheckgpt}.
+
+\paragraph{Method and assumptions.}
+The core assumption is that factual statements are \emph{stable} under resampling, while hallucinations are not. Variants use BERTScore, MQAG, or n-gram disagreement. WikiBio is the primary testbed (sentence- and passage-level).
+
+\paragraph{Evidence.}
+SelfCheckGPT achieves higher AUC-PR than grey-box baselines on WikiBio sentence-level detection and stronger Spearman correlation on passage-level factuality ranking \cite{manakul2023selfcheckgpt}.
+
+\paragraph{Critical analysis.}
+Self-consistency is a weak epistemic foundation in law: models can confidently repeat the same fabricated citation across samples, especially when parametric memory encodes plausible case names. The method cannot check reporter volume, page, court, or year against a ground-truth legal database, the verification primitive this thesis adopts. Domain mismatch is severe: WikiBio biographies are not 75k-word litigation bundles, and legal citations have structured formats amenable to parsing and lookup, not just embedding similarity. SelfCheckGPT is useful as a \textbf{cheap triage} signal but dangerous if mistaken for professional-grade legal auditing.
+
+\paragraph{Implication for this thesis.}
+SelfCheckGPT-style signals may complement but cannot replace CourtListener verification for case citations.
+
+\subsection{TRUE: meta-evaluation of consistency metrics}
+\label{sec:lit-true}
+
+\paragraph{Problem framing.}
+Honovich et al.\ introduce TRUE, a standardized meta-evaluation suite for factual consistency metrics across diverse NLG tasks \cite{honovich2022true}. The goal is to rank \emph{metrics}, not to certify deployable systems.
+
+\paragraph{Method and assumptions.}
+Example-level evaluation compares metric scores to human consistency labels on summarization, dialogue, and other datasets. NLI-based models (e.g., VITAMINC-trained) and QG/QA pipelines are benchmarked against semantic similarity measures including BERTScore.
+
+\paragraph{Evidence.}
+NLI and QG/QA approaches achieve the highest ROC-AUC on TRUE; pure semantic similarity metrics are weaker for factual consistency \cite{honovich2022true}.
+
+\paragraph{Critical analysis.}
+TRUE is invaluable for methodology: it shows that BERTScore alone is an unreliable consistency proxy, aligning with Maynez et al.\ and Multi-LexSum human ratings \cite{maynez2020faithfulness,shen2022multilexsum}. However, meta-evaluation on general-domain summaries does not translate to \textbf{legal citation verification}: NLI models struggle with long contexts, rare entities, and subtle citation mutations (wrong year, swapped party). QG/QA consistency checks answer questions about a summary, not whether a citation exists in a case-law API. TRUE does not prescribe correction policies or legal-domain taxonomies.
+
+\paragraph{Implication for this thesis.}
+The thesis adopts the TRUE \emph{spirit} (treat consistency as first-class) but implements HR via symbolic lookup rather than relying solely on NLI judges.
+
+\subsection{Survey of hallucination in NLG (Ji et al., 2023)}
+\label{sec:lit-ji-survey}
+
+\paragraph{Problem framing.}
+Ji et al.\ synthesize over 300 papers on hallucination in abstractive summarization, dialogue, QA, data-to-text, and machine translation \cite{ji2023hallucinationsurvey}. They distinguish intrinsic vs.\ extrinsic hallucinations and survey mitigation via retrieval, decoding constraints, and human feedback.
+
+\paragraph{Evidence and critical analysis.}
+The survey correctly identifies retrieval augmentation and faithful decoding as among the most promising mitigations, yet also notes that automated metrics remain limited and human evaluation is the gold standard. The legal domain is not treated as a first-class citizen: citation formats, professional liability, and canonical law databases are absent from the taxonomy. Mitigation strategies are described categorically without end-to-end systems that \textbf{verify and rewrite} legal citations before release. For this thesis, Ji et al.\ provide background vocabulary but not a solution path.
+
+\paragraph{Implication for this thesis.}
+The thesis contributes a \textbf{domain-specific citation hallucination taxonomy} and an implemented generate--verify--correct loop, moving from Ji et al.'s taxonomy of causes to an operational legal pipeline.
+
+\subsection{FRANK and faithfulness benchmarks (Pagnoni et al., 2021)}
+
+Pagnoni et al.\ show that factuality errors in summarization are heterogeneous and that systems ranked highly by ROUGE can be factually poor under FRANK \cite{pagnoni2021factuality}. This reinforces the metric critique in Section~\ref{sec:lit-metrics} and supports using multi-metric evaluation (overlap + embedding + citation HR) rather than any single score.
+
+\subsection{Section synthesis}
+
+Detection research excels at \emph{flagging} inconsistency; commercial RAG excels at \emph{retrieving} support; neither delivers \emph{verifiable, corrected} legal summaries on long MDS benchmarks. The thesis occupies the intersection: symbolic grounding in CourtListener, explicit HR, and bounded regeneration while tracking ROUGE/BERTScore as secondary quality constraints.

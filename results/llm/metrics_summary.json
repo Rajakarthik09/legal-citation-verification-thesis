@@ -1,0 +1,132 @@
+{
+  "baseline": {
+    "n_cases": 100,
+    "rouge1_mean": 0.43999062416781265,
+    "rouge2_mean": 0.1536697198786801,
+    "rougeL_mean": 0.17793123205629635,
+    "rougeLsum_mean": 0.4251441633431952,
+    "hr_micro": 0.5753424657534246,
+    "hr_macro": 0.2863606694977663,
+    "hr_per_case_mean": 0.2863606694977663,
+    "hr_paired_micro": 0.5753424657534246,
+    "hr_paired_macro": 0.2863606694977663,
+    "hr_paired_per_case_mean": 0.2863606694977663,
+    "hr_surviving_micro": 0.5753424657534246,
+    "fix_rate": 0.0,
+    "removal_rate": 0.0,
+    "garbled_rate": 0.0,
+    "still_bad_rate": 0.0,
+    "total_citations": 365,
+    "total_draft_citations": 0,
+    "label_counts": {
+      "Ambiguous": 94,
+      "Verified": 155,
+      "NotFound": 58,
+      "Mismatch": 58
+    },
+    "correction_efficiency": {
+      "mean_iterations": 0.0,
+      "median_iterations": 0.0,
+      "pct_within_1": 1.0,
+      "pct_within_2": 1.0
+    },
+    "bertscore_f1_mean": 0.8330559796094894
+  },
+  "flagging": {
+    "n_cases": 100,
+    "rouge1_mean": 0.43999062416781265,
+    "rouge2_mean": 0.1536697198786801,
+    "rougeL_mean": 0.17793123205629635,
+    "rougeLsum_mean": 0.4251441633431952,
+    "hr_micro": 0.5753424657534246,
+    "hr_macro": 0.2863606694977663,
+    "hr_per_case_mean": 0.2863606694977663,
+    "hr_paired_micro": 0.5753424657534246,
+    "hr_paired_macro": 0.2863606694977663,
+    "hr_paired_per_case_mean": 0.2863606694977663,
+    "hr_surviving_micro": 0.5753424657534246,
+    "fix_rate": 0.0,
+    "removal_rate": 0.0,
+    "garbled_rate": 0.0,
+    "still_bad_rate": 0.0,
+    "total_citations": 365,
+    "total_draft_citations": 0,
+    "label_counts": {
+      "Ambiguous": 94,
+      "Verified": 155,
+      "NotFound": 58,
+      "Mismatch": 58
+    },
+    "correction_efficiency": {
+      "mean_iterations": 0.0,
+      "median_iterations": 0.0,
+      "pct_within_1": 1.0,
+      "pct_within_2": 1.0
+    },
+    "bertscore_f1_mean": 0.8330559796094894
+  },
+  "symbolic": {
+    "n_cases": 100,
+    "rouge1_mean": 0.4401053015552698,
+    "rouge2_mean": 0.1536764661348208,
+    "rougeL_mean": 0.17820108509951552,
+    "rougeLsum_mean": 0.4251790913871807,
+    "hr_micro": 0.30952380952380953,
+    "hr_macro": 0.14661012864657366,
+    "hr_per_case_mean": 0.14661012864657366,
+    "hr_paired_micro": 0.2219178082191781,
+    "hr_paired_macro": 0.2516367539270765,
+    "hr_paired_per_case_mean": 0.12581837696353826,
+    "hr_surviving_micro": 0.30952380952380953,
+    "fix_rate": 0.6191780821917808,
+    "removal_rate": 0.1589041095890411,
+    "garbled_rate": 0.0,
+    "still_bad_rate": 0.2219178082191781,
+    "total_citations": 294,
+    "total_draft_citations": 365,
+    "label_counts": {
+      "Ambiguous": 76,
+      "Verified": 203,
+      "Mismatch": 15
+    },
+    "correction_efficiency": {
+      "mean_iterations": 0.53,
+      "median_iterations": 0.0,
+      "pct_within_1": 0.9,
+      "pct_within_2": 0.91
+    },
+    "bertscore_f1_mean": 0.8329480016231536
+  },
+  "llm_rewrite": {
+    "n_cases": 100,
+    "rouge1_mean": 0.439875025694657,
+    "rouge2_mean": 0.15361437562218144,
+    "rougeL_mean": 0.17839480211258826,
+    "rougeLsum_mean": 0.4245981714301553,
+    "hr_micro": 0.3784722222222222,
+    "hr_macro": 0.16659893292981529,
+    "hr_per_case_mean": 0.16659893292981529,
+    "hr_paired_micro": 0.2465753424657534,
+    "hr_paired_macro": 0.26727744656776914,
+    "hr_paired_per_case_mean": 0.13363872328388457,
+    "hr_surviving_micro": 0.3784722222222222,
+    "fix_rate": 0.5726027397260274,
+    "removal_rate": 0.18082191780821918,
+    "garbled_rate": 0.0,
+    "still_bad_rate": 0.2465753424657534,
+    "total_citations": 288,
+    "total_draft_citations": 365,
+    "label_counts": {
+      "Ambiguous": 75,
+      "Verified": 179,
+      "Mismatch": 34
+    },
+    "correction_efficiency": {
+      "mean_iterations": 0.53,
+      "median_iterations": 0.0,
+      "pct_within_1": 0.9,
+      "pct_within_2": 0.91
+    },
+    "bertscore_f1_mean": 0.8329168504476547
+  }
+}

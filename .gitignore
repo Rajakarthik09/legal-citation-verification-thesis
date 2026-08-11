@@ -1,0 +1,39 @@
+# Environments
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.egg-info/
+
+# Secrets
+.env
+!.env.example
+
+# Data and caches (Multi-LexSum is CC BY-NC; not redistributed here)
+data/
+*.sqlite
+*.sqlite3
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.bbl
+*.bcf
+*.blg
+*.fls
+*.fdb_latexmk
+*.run.xml
+*.synctex.gz
+*.nav
+*.snm
+*.egg-info/

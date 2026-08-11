@@ -1,0 +1,45 @@
+\label{ch:evaluation-method}
+\section{Evaluation Design Overview}
+
+This chapter outlines the evaluation protocol used to answer RQ1--RQ3. Full numerical findings appear in later results chapters; the design here is aligned with the implemented methodology (Chapter~\ref{ch:methodology}).
+
+\section{Scenarios}
+
+The \textbf{primary} scenario is Multi-LexSum $D\rightarrow L$ (document-to-long), as motivated by Chapter~\ref{ch:eda}. Short and tiny granularities are reserved for optional ablations because expert labels are incomplete and citation density is low.
+
+The full-scale evaluation additionally compares three Module~A generators on the identical case set (PRIMERA, an LLM zero-shot variant, and an LLM+retrieval variant; Section~\ref{sec:module-a-crossmodel}) to test whether citation-attempt density and paired HR are properties of a specific checkpoint or generalize across generator architecture and context budget. All three are scored under the same conditions and metrics below.
+
+An audit subset supports manual spot-checks of taxonomy labels and extraction behaviour.
+
+\section{Conditions}
+
+\begin{itemize}
+  \item \textbf{Baseline:} PRIMERA draft; paired HR on draft citations.
+  \item \textbf{Flagging:} draft unchanged; CourtListener labels exposed.
+  \item \textbf{Symbolic:} redact / safe repair / re-anchor correction loop.
+  \item \textbf{LLM rewrite:} optional surface rewrite after symbolic edits, then re-verify.
+\end{itemize}
+
+\section{Metrics}
+
+\begin{itemize}
+  \item \textbf{Primary faithfulness:} paired draft-citation hallucination rate
+  \[
+  \mathrm{HR}_{\mathrm{paired}} = \frac{\#\{\texttt{still\_bad},\texttt{garbled}\}}{n_{\mathrm{draft}}}.
+  \]
+  Ambiguous cites left unresolved count as \texttt{still\_bad}.
+  \item \textbf{Quality:} ROUGE-L\textsubscript{sum}, sentence-split union-LCS (primary quality gate for RQ3); plain ROUGE-L reported alongside for transparency; BERTScore when enabled in experiment config \cite{lin2004rouge,zhang2020bertscore}.
+  \item \textbf{Correction diagnostics:} fix / removal / still\_bad / garbled rates; iteration counts.
+\end{itemize}
+
+\section{Statistical testing}
+
+\begin{itemize}
+  \item McNemar tests on discordant citation outcomes paired by \texttt{citation\_id} \cite{mcnemar1947}.
+  \item Bootstrap confidence intervals for ROUGE-L\textsubscript{sum} deltas.
+\end{itemize}
+Small pilot subsets used during engineering are reported with underpowered caveats and do not replace full-split evaluation.
+
+\section{Error analysis}
+
+Qualitative analysis focuses on Ambiguous identity clashes, LEXIS/WL fragility, OCR-induced extraction errors, and re-anchor appropriateness, cases where CourtListener resolves a string to the wrong matter if party gates are disabled.

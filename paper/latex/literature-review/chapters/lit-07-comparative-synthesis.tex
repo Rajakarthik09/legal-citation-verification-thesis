@@ -1,0 +1,56 @@
+\section{Comparative Synthesis of Surveyed Literature}
+\label{sec:lit-synthesis}
+
+Table~\ref{tab:lit-synthesis} consolidates fourteen works (twelve corpus papers plus LEGAL-BERT and Maynez et al.) along dimensions that matter for the thesis: task setting, primary evidence, structural limitation, and the gap relative to verifiable legal summarization.
+
+\begin{table}[!t]
+\centering
+\caption{Comparative synthesis: evidence, limitations, and thesis gap.}
+\label{tab:lit-synthesis}
+\small
+\begin{tabular}{@{}p{2.5cm}p{2.2cm}p{2.4cm}p{3.8cm}p{3.5cm}@{}}
+\toprule
+\textbf{Work} & \textbf{Task} & \textbf{Key result} & \textbf{Critical limitation} & \textbf{Thesis gap addressed} \\
+\midrule
+Multi-LexSum \cite{shen2022multilexsum} & Legal MDS & ROUGE-1 53.73; human faithfulness 0.43/3 & No citation-level verification protocol & HR on CourtListener + correction \\
+PRIMERA \cite{xiao2022primera} & MDS & SOTA ROUGE on Multi-LexSum & Optimizes overlap, not citations & Module A + symbolic gate \\
+ROUGE \cite{lin2004rouge} & Metric & Correlates on DUC news & Misses factual errors \cite{maynez2020faithfulness} & HR as co-primary metric \\
+BERTScore \cite{zhang2020bertscore} & Metric & Better than BLEU on MT & Weak on consistency (TRUE) \cite{honovich2022true} & Joint ROUGE/BERTScore + HR \\
+LEGAL-BERT \cite{chalkidis2020legalbert} & Classification & Legal task gains & Not summarization / verification & Optional encoder only \\
+Dahl et al.\ \cite{dahl2024largelegalfictions} & Legal QA & 58--88\% HR & Not long summarization & Summarization + taxonomy \\
+Magesh et al.\ \cite{magesh2025hallucinationfree} & Tool QA & 17--33\% HR & Closed systems; no correction & Open pipeline + ablations \\
+RAG \cite{lewis2020rag} & Open QA & EM 44.5 NQ & No legal citation guarantee & Symbolic post-check \\
+HalluGraph \cite{noel2025hallugraph} & Legal QA & AUC 0.84--0.94 & Detection only; preprint & Correction on Multi-LexSum \\
+SelfCheckGPT \cite{manakul2023selfcheckgpt} & WikiBio & High AUC-PR & No external legal DB & CourtListener lookup \\
+TRUE \cite{honovich2022true} & Meta-metric & NLI/QG best & Not legal citations & Citation-level HR \\
+Ji survey \cite{ji2023hallucinationsurvey} & Survey & Mitigation taxonomy & Not operationalized in law & Implemented taxonomy + loop \\
+Maynez et al.\ \cite{maynez2020faithfulness} & Summarization & ROUGE--faithfulness gap & General domain & Legal citation focus \\
+Pagnoni (FRANK) \cite{pagnoni2021factuality} & Summarization & Factuality taxonomy & No legal DB check & Symbolic verifier \\
+Kautz \cite{kautz2022thirdaisummer} & Position & Neuro-symbolic levels & No benchmark & End-to-end legal system \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Cross-cutting themes}
+
+\textbf{Theme 1: Metric decoupling.}
+Across Multi-LexSum, Maynez et al., TRUE, and FRANK, automatic scores systematically overestimate usefulness. Any thesis claiming safety must report HR alongside ROUGE/BERTScore.
+
+\textbf{Theme 2: Retrieval $\neq$ verification.}
+RAG and commercial legal tools improve grounding but leave double-digit hallucination rates \cite{magesh2025hallucinationfree}. Retrieval supplies evidence; it does not certify citation strings.
+
+\textbf{Theme 3: Detection $\neq$ correction.}
+HalluGraph, SelfCheckGPT, and NLI-based metrics flag problems they do not fix. Professional legal workflows need corrected outputs, not only risk scores.
+
+\textbf{Theme 4: Task mismatch.}
+Legal QA profiling (Dahl, Magesh, HalluGraph) does not bound summarization risk on 75k-word dockets. Multi-LexSum exposes summarization difficulty but not citation solutions.
+
+\textbf{Theme 5: Auditability.}
+Closed commercial systems prevent reproducible science. CourtListener-backed symbolic labels provide per-citation audit trails suitable for error analysis and ablation studies.
+
+\subsection{Positioning statement}
+
+The surveyed literature establishes that legal hallucinations are frequent, that summarization metrics are misleading, and that retrieval and detection help but do not close the accountability loop. No reviewed paper implements \textbf{generate $\rightarrow$ verify $\rightarrow$ correct} for Multi-LexSum summaries with paired case-citation HR against a canonical legal API, including conservative Ambiguous handling and same-case re-anchoring. That unimplemented pipeline is the precise contribution space of this thesis (Chapter~\ref{ch:research-gap} and Chapter~\ref{ch:methodology}).
+
+\paragraph{Implication for dual-system citation verification.}
+Related work therefore justifies System~1 (PRIMERA drafts) plus System~2 (eyecite + CourtListener + symbolic correction) as a necessary response to metric decoupling, RAG incompleteness, and detection-without-repair limits, not as an optional post-processing flourish.

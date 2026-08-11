@@ -1,0 +1,64 @@
+%% Main Master Thesis Document
+%% Progress draft: complete through Evaluation Method (EDA + dual-system pipeline + protocol).
+%% Results/Discussion/Conclusion pending full-scale verification of all three generators.
+%% Rebuild EDA figures: python code/scripts/generate_thesis_figures.py
+%% Writing notes: THESIS_WRITING_NOTES.md
+
+\documentclass{srhthesis}
+
+\input{preamble/packages.tex}
+\input{preamble/thesis-details-main.tex}
+\input{preamble/bib-setup.tex}
+
+\graphicspath{{figures/eda/}{figures/results/}{figures/methodology/}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\input{chapters/abstract.tex}
+\end{abstract}
+
+\thesisTables
+
+\cleardoublepage
+\addcontentsline{toc}{chapter}{List of Abbreviations}
+\chapter*{List of Abbreviations}
+\input{chapters/abbreviations.tex}
+
+\thesisBodyStart
+
+\chapter{Introduction}
+\input{chapters/introduction.tex}
+
+\chapter{Literature Review}
+\input{chapters/literature-review-thesis.tex}
+
+\chapter{Research Gap, Questions, and Thesis Objectives}
+\input{chapters/research-gap-objectives.tex}
+
+\chapter{Data Source}
+\input{chapters/data-source.tex}
+
+\chapter{Exploratory Data Analysis}
+\input{chapters/exploratory-data-analysis.tex}
+
+\chapter{Methodology: Methods, Tools, and Technologies}
+\input{chapters/methodology.tex}
+
+\chapter{Evaluation Method}
+\input{chapters/evaluation-method.tex}
+
+\chapter{Results}
+\input{chapters/results.tex}
+
+\chapter{Discussion}
+\input{chapters/discussion.tex}
+
+\chapter{Conclusion}
+\input{chapters/conclusion.tex}
+
+\printReferences
+
+\end{document}

@@ -1,0 +1,26 @@
+# Full pipeline experiment — validation split, D→L only, 50 cases
+
+split: validation
+granularity: long  # D→L only — short/tiny descoped after EDA
+max_cases: 50
+seed: 42
+
+conditions:
+  - baseline
+  - flagging
+  - symbolic
+  - llm_rewrite
+
+output_dir: outputs/validation50_long
+generations_dir: outputs/generations
+reports_dir: outputs/verification_reports
+conditions_dir: outputs/conditions
+results_dir: outputs/results
+audit_template_path: outputs/audit/manual_label_template_200.csv
+error_analysis_path: outputs/results/error_analysis_review.csv
+
+run_bertscore: false
+
+# Phase 5 targets (thesis success criteria)
+hr_reduction_target_pct: 30.0
+rouge_tolerance_pct: 2.0

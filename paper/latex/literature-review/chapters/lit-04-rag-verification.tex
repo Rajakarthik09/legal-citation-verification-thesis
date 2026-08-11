@@ -1,0 +1,68 @@
+\section{Retrieval-Augmented Generation and Legal Verification}
+\label{sec:lit-rag}
+
+Retrieval-Augmented Generation (RAG) is often presented as the engineering fix for hallucination. This section separates what RAG \emph{provenly} improves from what legal summarization \emph{requires}: post-generation verification and correction of case citations against an authoritative database.
+
+\subsection{Retrieval-Augmented Generation (Lewis et al., 2020)}
+\label{sec:lit-rag-lewis}
+
+\paragraph{Problem framing.}
+Lewis et al.\ combine parametric sequence-to-sequence memory with non-parametric dense retrieval over Wikipedia to improve knowledge-intensive NLP \cite{lewis2020rag}.
+
+\paragraph{Method and assumptions.}
+A retriever selects passages; a BART-based generator conditions on them. Variants (RAG-Sequence vs.\ RAG-Token) differ in how retrieved evidence is fused. The setup assumes that Wikipedia passages are relevant and that attribution is approximated by copying retrieved content.
+
+\paragraph{Evidence.}
+On Natural Questions, RAG-Sequence reaches 44.5 exact match; generations are more specific and diverse than parametric-only baselines \cite{lewis2020rag}. Similar gains appear on Jeopardy-style QA and fact verification.
+
+\paragraph{Critical analysis.}
+RAG improves \textbf{open-domain factuality} when facts are locally present in retrieved chunks. Legal case citations differ from Wikipedia facts: they require normalization to reporter citations, disambiguation of party names, and reconciliation with docket metadata. Retrieval can supply supporting paragraphs while the generator still emits an incorrect \emph{citation string}, a failure mode Magesh et al.\ observe in production legal tools \cite{magesh2025hallucinationfree}. RAG also does not provide auditable per-citation labels (verified / not found / mismatch) suitable for regulatory or professional review. The framework has no correction loop: if generation fails verification, the paper offers no bounded regenerate protocol.
+
+\paragraph{Implication for this thesis.}
+RAG may inform Module~A context construction, but Modules~B--C (extraction, CourtListener verification, correction) address failures RAG cannot logically prevent.
+
+\subsection{HalluGraph: structural detection without correction}
+\label{sec:lit-hallugraph}
+
+\paragraph{Problem framing.}
+No{\"e}l et al.\ propose HalluGraph, an auditable hallucination detector for legal RAG that aligns knowledge graphs built from context, query, and response \cite{noel2025hallugraph}. The emphasis on auditability responds to legitimate criticism of opaque LLM judges.
+
+\paragraph{Method and assumptions.}
+Entities and relations are extracted into graphs; alignment scores (Entity Grounding, Relation Preservation) flag structural inconsistency. The method assumes that graph extraction from legal text is sufficiently accurate that misalignment signals hallucination, an assumption that itself can fail on long, noisy dockets.
+
+\paragraph{Evidence.}
+Reported AUC values are \textbf{0.94} on Legal Contract QA ($N{=}550$) and \textbf{0.84} on Legal Case QA ($N{=}550$), outperforming BERTScore-based detectors on entity-swap perturbations \cite{noel2025hallugraph}.
+
+\paragraph{Critical analysis.}
+HalluGraph is a \textbf{detector}, not a summarization system. It does not generate Multi-LexSum summaries, does not correct flagged errors, and evaluates QA-style outputs rather than compressive summaries spanning hundreds of pages. High AUC on curated legal QA sets does not bound error rates when graph extraction misses rare citations embedded in procedural footnotes. The work is an arXiv preprint (December 2025); reproducibility and peer review are still open. Most importantly for this thesis: detecting graph misalignment does not tell a practitioner whether \texttt{Brown v. Board of Education, 347 U.S. 483 (1954)} exists in CourtListener with matching metadata; symbolic lookup does.
+
+\paragraph{Implication for this thesis.}
+HalluGraph motivates \emph{structured, auditable} checks but leaves the thesis gap open: \textbf{citation-specific symbolic verification plus bounded correction} on a summarization benchmark.
+
+\subsection{Open legal tooling: eyecite and CourtListener}
+\label{sec:lit-eyecite-cl}
+
+Beyond commercial RAG stacks, the Free Law Project maintains open infrastructure for U.S.\ case law, including CourtListener and the eyecite citation extractor \cite{freelawproject,courtlistener_api,eyecite2021}. These tools matter methodologically: they enable reproducible citation spans and API lookups without vendor NDAs. Citation \emph{recommendation} literature \cite{farber2020citation} is adjacent but distinct: it suggests cites to insert, whereas this thesis asks whether cites already present in a generated summary are real and correctly identified.
+
+\paragraph{Implication for this thesis.}
+Modules~B and~C are built on eyecite and CourtListener precisely to keep verification open, auditable, and independent of closed legal-research products.
+
+\subsection{Comparative note: retrieval vs.\ symbolic verification}
+
+\begin{table}[!t]
+\centering
+\caption{RAG vs.\ symbolic citation verification (conceptual contrast).}
+\label{tab:rag-vs-symbolic}
+\begin{tabular}{@{}p{3.2cm}p{5.2cm}p{5.6cm}@{}}
+\toprule
+\textbf{Dimension} & \textbf{RAG (Lewis et al.)} & \textbf{Thesis symbolic layer} \\
+\midrule
+Grounding mechanism & Dense retrieval over corpus & API lookup in canonical case-law DB \\
+Failure mode & Wrong or partial evidence in context & Citation string not in DB / metadata mismatch \\
+Output guarantee & Probabilistic improvement & Per-citation label + correction loop \\
+Audit trail & Opaque retrieval scores & Human-readable match explanation \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:rag-vs-symbolic} clarifies why the thesis treats RAG and symbolic verification as \emph{complementary but non-substitutable}. Industry legal tools already implement RAG; they still hallucinate at double-digit rates \cite{magesh2025hallucinationfree}. The thesis hypothesis is that adding deterministic verification and correction on summarization outputs further reduces HR without assuming retrieval perfection.

@@ -1,0 +1,19 @@
+{
+  "split": "test",
+  "min_gold_citations": 1,
+  "top_n": 5,
+  "case_ids": [
+    "SD-MI-0001",
+    "EE-NY-0192",
+    "PN-IL-0007",
+    "IM-NJ-0006",
+    "EE-WA-0118"
+  ],
+  "counts": {
+    "SD-MI-0001": 36,
+    "EE-NY-0192": 25,
+    "PN-IL-0007": 23,
+    "IM-NJ-0006": 16,
+    "EE-WA-0118": 14
+  }
+}

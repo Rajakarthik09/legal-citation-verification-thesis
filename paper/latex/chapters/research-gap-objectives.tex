@@ -1,0 +1,54 @@
+\label{ch:research-gap}
+\section{Research Gap}
+
+Existing approaches expose a core limitation for legal summarization in practice: they can produce fluent summaries but cannot \emph{guarantee} that case citations in the output are correct.
+\begin{itemize}
+  \item \textbf{Retrieval is not a guarantee.} RAG \cite{lewis2020rag} can improve factuality, but legal evaluations show that even RAG-based tools still hallucinate at non-trivial rates \cite{magesh2025hallucinationfree}.
+  \item \textbf{Verification without correction.} Post-hoc detection methods (including structural approaches such as HalluGraph \cite{noel2025hallugraph}) focus on identifying hallucinations, but do not provide an end-to-end Multi-LexSum summarization pipeline that corrects hallucinated citations before output.
+  \item \textbf{Missing end-to-end evaluation for summarization.} Legal hallucination profiling \cite{dahl2024largelegalfictions} and legal-tool evaluations \cite{magesh2025hallucinationfree} are not tied to long-document legal summarization with both quality metrics and \emph{paired} citation-faithfulness metrics.
+  \item \textbf{Unsafe ``repair'' without identity checks.} Naively replacing a mismatched citation with a database case name can insert an unrelated real case when proprietary identifiers collide, a failure mode this thesis treats as Ambiguous rather than automatic repair.
+\end{itemize}
+
+\section{Research Aim and Objectives}
+
+The overall aim of the thesis is:
+\begin{quote}
+  \emph{To design and evaluate a dual-system, neuro-symbolic pipeline for legal case summarization that verifies and corrects hallucinated case citations, while preserving summarization quality on Multi-LexSum.}
+\end{quote}
+
+To achieve this aim, the thesis pursues the following objectives:
+\begin{enumerate}
+  \item \textbf{Define a case-citation hallucination taxonomy} operationalized as Verified, Mismatch, Ambiguous, NotFound, and Malformed labels against CourtListener.
+  \item \textbf{Implement a neural baseline summarizer} (PRIMERA, $D\rightarrow L$) and quantify baseline citation-hallucination behaviour with eyecite extraction.
+  \item \textbf{Build a symbolic verifier} that checks extracted citations against CourtListener \cite{courtlistener_api} with auditable explanations.
+  \item \textbf{Implement a bounded symbolic correction policy} that redacts unverifiable cites, safely repairs soft mismatches, leaves or re-anchors Ambiguous cites, and never substitutes contradicting CourtListener identities.
+  \item \textbf{Evaluate with ablations and statistical testing}, jointly measuring summarization quality (ROUGE-L, optionally BERTScore) and paired draft-citation hallucination rate (HR).
+\end{enumerate}
+
+\section{Research Questions}
+
+\begin{itemize}
+  \item \textbf{RQ1 (Hallucination measurement):} What types and frequencies of case-citation hallucinations do baseline summarization systems produce on Multi-LexSum under the CourtListener taxonomy?
+  \item \textbf{RQ2 (Symbolic verification effectiveness):} Does symbolic verification plus bounded correction measurably reduce \emph{paired} citation hallucination rates compared to a neural-only baseline?
+  \item \textbf{RQ3 (Quality preservation under correction):} Can the full dual-system approach (generate $\rightarrow$ verify $\rightarrow$ correct) preserve ROUGE-L\textsubscript{sum} within $\pm 2$ percentage points while reducing paired HR by at least 30\% relative to baseline?
+\end{itemize}
+
+\subsection{Consolidated gaps from the literature review}
+The literature review (Chapter~\ref{ch:lit-review}) yields five gaps that jointly motivate the thesis design:
+\begin{enumerate}
+  \item \textbf{Benchmark quality $\neq$ professional reliability.} Multi-LexSum reports moderate ROUGE alongside low human faithfulness for generations \cite{shen2022multilexsum}; overlap metrics do not detect fabricated citations \cite{maynez2020faithfulness,pagnoni2021factuality}.
+  \item \textbf{Legal hallucination studies omit long-form summarization.} Dahl et al.\ and Magesh et al.\ quantify hallucinations in QA and tool settings \cite{dahl2024largelegalfictions,magesh2025hallucinationfree}, but not for abstractive multi-document legal summaries with extractable citations.
+  \item \textbf{Retrieval and detection without correction.} RAG and detection systems improve or flag factuality but do not rewrite summaries under structured legal-database feedback \cite{lewis2020rag,noel2025hallugraph,manakul2023selfcheckgpt}.
+  \item \textbf{Lack of auditable, domain-specific metrics.} General consistency benchmarks (e.g., TRUE) do not replace checking whether a citation exists in a case-law database \cite{honovich2022true}.
+  \item \textbf{Neuro-symbolic rhetoric without legal instantiation.} Position papers argue for neuro-symbolic integration \cite{kautz2022thirdaisummer}, but surveyed implementations rarely deliver benchmarked generate--verify--correct pipelines for Multi-LexSum.
+\end{enumerate}
+
+\subsection{Proposed evaluation criteria (hypotheses)}
+The following success criteria for RQ3 are stated upfront for falsifiability; they are \emph{not} pre-established final results:
+\begin{itemize}
+  \item \textbf{Citation faithfulness:} relative reduction in paired Hallucination Rate (HR) of at least 30\% versus the neural-only baseline on the evaluated split.
+  \item \textbf{Quality preservation:} ROUGE-L\textsubscript{sum} remains within $\pm$2 percentage points of the draft mean (BERTScore reported when enabled).
+  \item \textbf{Auditability:} every evaluated summary includes a machine- and human-readable verification/outcome record per draft citation.
+\end{itemize}
+
+Pilot citation-rich subsets used during engineering may illustrate trajectories toward these criteria but do not substitute for full-split evaluation.

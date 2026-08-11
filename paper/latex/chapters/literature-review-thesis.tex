@@ -1,0 +1,34 @@
+% Full literature review chapter for the main thesis (reuses standalone lit-review sources)
+\label{ch:lit-review}
+\input{literature-review/chapters/lit-01-introduction.tex}
+\input{literature-review/chapters/lit-02-legal-summarization.tex}
+\input{literature-review/chapters/lit-03-legal-hallucinations.tex}
+\input{literature-review/chapters/lit-04-rag-verification.tex}
+\input{literature-review/chapters/lit-05-detection-evaluation.tex}
+\input{literature-review/chapters/lit-06-neuro-symbolic.tex}
+\input{literature-review/chapters/lit-07-comparative-synthesis.tex}
+
+\section{Related Work Summary Table}
+Table~\ref{tab:relatedwork} summarizes selected related work and the verifiable values used throughout this thesis.
+
+\begin{table}[!t]
+\centering
+\caption{Verified related work summary (selected).}
+\label{tab:relatedwork}
+\begin{tabular}{@{}p{3.4cm}p{3.0cm}p{3.0cm}p{4.6cm}@{}}
+\toprule
+\textbf{Paper} & \textbf{Dataset / Setting} & \textbf{Model / Method} & \textbf{Key result used here (verifiable)} \\
+\midrule
+Shen et al.\ (Multi-LexSum) \cite{shen2022multilexsum} & Multi-LexSum (legal MDS; long sources) & PRIMERA baseline for \(D \rightarrow L\) & PRIMERA achieves ROUGE-1 53.73, ROUGE-2 27.32, ROUGE-L 30.89 on \(D \rightarrow L\); human rating of generations reported as 0.43 on a 0--3 scale. \\
+\addlinespace
+Dahl et al.\ \cite{dahl2024largelegalfictions} & Verifiable legal knowledge queries & Multiple public LLMs & Hallucination rates reported between 58\% (ChatGPT-4) and 88\% (Llama 2) on randomly selected federal court cases (task-dependent). \\
+\addlinespace
+Magesh et al.\ \cite{magesh2025hallucinationfree} & Preregistered evaluation of legal research tools (200+ queries) & Lexis+ AI, Westlaw AI-AR, Ask Practical Law AI & Hallucination rates reported between 17\% and 33\% depending on tool. \\
+\addlinespace
+No{\"e}l et al.\ (HalluGraph) \cite{noel2025hallugraph} & Legal Contract QA (N=550), Legal Case QA (N=550) & Knowledge-graph alignment metrics & Reported AUC: 0.94 (contracts) and 0.84 (case QA). \\
+\addlinespace
+Lewis et al.\ (RAG) \cite{lewis2020rag} & Open-domain QA (Natural Questions) & RAG-Sequence / RAG-Token & Natural Questions exact match reported as 44.5 (RAG-Seq) and 44.1 (RAG-Token). \\
+\bottomrule
+\end{tabular}
+\end{table}
+

@@ -1,0 +1,40 @@
+# Professor demo — Thursday presentation (10 citation-rich validation cases, D→L)
+
+split: validation
+granularity: long
+max_cases: 10
+seed: 42
+
+# Citation-rich selection (replaces implicit first-N in split order)
+case_selection: citation_rich
+min_gold_citations: 1
+case_ids:
+  - PC-MI-0003
+  - IM-TN-0001
+  - SD-KS-0001
+  - PN-AZ-0003
+  - PN-IL-0009
+  - PN-NY-0014
+  - PC-MS-0001
+  - PC-MI-0007
+  - IM-CA-0095
+  - PB-CA-0016
+
+conditions:
+  - baseline
+  - flagging
+  - symbolic
+  - llm_rewrite
+
+# Isolated from first-10 (cite-free) run
+generations_dir: outputs/generations_professor10
+conditions_dir: outputs/conditions_professor10_v2
+results_dir: outputs/results_professor10_v2
+audit_template_path: outputs/audit/manual_label_template_200.csv
+error_analysis_path: outputs/results_professor10_v2/error_analysis_review.csv
+
+run_bertscore: false
+hr_reduction_target_pct: 30.0
+rouge_tolerance_pct: 2.0
+
+presentation_label: "PRELIMINARY — n=10 citation-rich validation, D→L only"

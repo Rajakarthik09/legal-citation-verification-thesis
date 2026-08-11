@@ -1,0 +1,36 @@
+% Packages you intend to use
+% ..
+
+% For example, if you want to render 
+% the document in a different font you can
+% use something like: 
+
+% \usepackage{gentium}
+
+\usepackage{url}
+\usepackage{xurl}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,shapes.geometric}
+
+\usepackage{listings}
+\usepackage{xcolor}
+\lstdefinestyle{thesispy}{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\bfseries\color{blue!50!black},
+  commentstyle=\itshape\color{black!50},
+  stringstyle=\color{green!40!black},
+  numbers=left,
+  numberstyle=\tiny\color{black!40},
+  numbersep=8pt,
+  frame=single,
+  rulecolor=\color{black!20},
+  breaklines=true,
+  breakatwhitespace=false,
+  showstringspaces=false,
+  tabsize=4,
+  columns=flexible,
+  xleftmargin=1em,
+}
+\lstset{style=thesispy}

@@ -1,0 +1,135 @@
+# Full-scale run — LLM zero-shot (naive truncation, larger context)
+# Same 100 citation-rich test-split cases as experiment_test100.yaml (PRIMERA),
+# for direct cross-model comparison on identical case_ids.
+
+split: test
+granularity: long
+max_cases: 100
+seed: 42
+
+model_tag: llm
+use_retrieval: false
+
+case_selection: citation_rich
+min_gold_citations: 1
+case_ids:
+  - SD-MI-0001
+  - EE-NY-0192
+  - PN-IL-0007
+  - IM-NJ-0006
+  - EE-WA-0118
+  - NS-OR-0002
+  - PC-HI-0005
+  - CJ-AL-0020
+  - VR-WI-0017
+  - ED-VA-0002
+  - FA-MO-0003
+  - IM-AZ-0021
+  - JC-NY-0048
+  - ED-MI-0001
+  - EE-KS-0026
+  - EE-NJ-0116
+  - PC-CA-0056
+  - CJ-MO-0005
+  - CW-DC-0001
+  - EE-CO-0069
+  - EE-DC-0051
+  - EJ-DC-0001
+  - IM-CA-0149
+  - PC-VA-0025
+  - SD-LA-0013
+  - EE-DC-0032
+  - FA-OK-0001
+  - FA-PA-0010
+  - IM-CA-0120
+  - IM-CA-0144
+  - IM-GA-0005
+  - JC-IL-0047
+  - NS-DC-0001
+  - PB-FL-0008
+  - PB-NY-0013
+  - PB-OH-0013
+  - PC-MI-0042
+  - PC-MO-0001
+  - PC-RI-0008
+  - CJ-AZ-0002
+  - CJ-TN-0003
+  - CW-GA-0001
+  - CW-NY-0001
+  - DR-CA-0033
+  - FA-MO-0007
+  - ID-IL-0004
+  - IM-AZ-0015
+  - IM-CA-0146
+  - IM-FL-0029
+  - JC-CA-0069
+  - MH-MA-0001
+  - MH-MA-0005
+  - PB-OK-0001
+  - PC-NC-0017
+  - PC-NJ-0023
+  - PC-OR-0012
+  - PC-TX-0022
+  - PR-NY-0004
+  - CJ-LA-0011
+  - CJ-MI-0001
+  - CJ-MI-0004
+  - DR-CA-0040
+  - ED-NC-0001
+  - ED-WI-0002
+  - EE-CO-0063
+  - EE-MD-0151
+  - EE-VA-0141
+  - FA-IL-0012
+  - FA-MS-0001
+  - FH-NY-0025
+  - IM-AR-0001
+  - IM-CA-0103
+  - IM-DC-0080
+  - IM-MD-0016
+  - IM-TX-0032
+  - JC-CA-0143
+  - JC-CO-0006
+  - JI-SD-0003
+  - NS-DC-0096
+  - NS-DC-0123
+  - PB-FL-0006
+  - PB-MD-0004
+  - PB-NE-0001
+  - PB-NE-0004
+  - PB-OH-0011
+  - PC-DC-0003
+  - PC-DE-0008
+  - PC-IL-0044
+  - PC-OR-0011
+  - PN-NY-0013
+  - VR-SC-0078
+  - CJ-CA-0017
+  - CJ-MI-0006
+  - CJ-NJ-0003
+  - CJ-NY-0011
+  - CJ-OK-0006
+  - CJ-TX-0003
+  - ED-MI-0007
+  - ED-MS-0006
+  - EE-LA-0118
+
+conditions:
+  - baseline
+  - flagging
+  - symbolic
+  - llm_rewrite
+
+generations_dir: outputs/generations_test100
+generations_filename: test_llm.jsonl
+conditions_dir: outputs/conditions_test100_llm
+results_dir: outputs/results_test100_llm
+audit_template_path: outputs/audit/manual_label_template_200.csv
+error_analysis_path: outputs/results_test100_llm/error_analysis_review.csv
+
+run_bertscore: true
+
+hr_reduction_target_pct: 30.0
+rouge_tolerance_pct: 2.0
+
+presentation_label: "Full-scale evaluation — n=100 citation-rich test-split cases, D→L, LLM zero-shot (naive truncation, larger context)"

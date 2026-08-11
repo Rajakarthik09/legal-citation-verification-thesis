@@ -1,0 +1,19 @@
+# Multi-LexSum data layer configuration (Phase 1)
+# Active scope: D→L (long) only — short/tiny descoped after EDA (see thesis Ch.5).
+
+granularities:
+  - long
+  # - short   # inactive — kept for reference only
+
+checkpoints:
+  long: allenai/primera-multi_lexsum-source-long
+  short: allenai/primera-multi_lexsum-source-short  # unused in current experiments
+
+# PRIMERA encoder max position embeddings (naive truncation target)
+max_tokens:
+  long: 4096
+  short: 4096  # unused
+
+truncation_strategy: naive
+
+cache_dir: data/processed

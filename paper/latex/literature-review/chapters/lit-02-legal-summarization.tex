@@ -1,0 +1,65 @@
+\section{Legal Summarization, Benchmarks, and Automatic Metrics}
+\label{sec:lit-summarization}
+
+\subsection{Multi-LexSum: benchmark design and what it actually measures}
+\label{sec:lit-multilexsum}
+
+\paragraph{Problem framing.}
+Shen et al.\ introduce Multi-LexSum as a ``real-world'' multi-document summarization (MDS) benchmark drawn from U.S. civil-rights litigation \cite{shen2022multilexsum}. The stated ambition is to move beyond news-style MDS toward legally consequential text: complaints, orders, and docket material that practitioners must synthesize. The dataset contains 9,280 expert-written summaries across three granularities (tiny $\approx$25 words, short $\approx$130 words, long $\approx$650 words), with source collections averaging more than 75{,}000 words per case and often exceeding 200 pages.
+
+\paragraph{Method and assumptions.}
+The authors assume that expert summaries at multiple granularities are a stable supervisory signal and that automatic metrics (primarily ROUGE) plus a small human study can characterize system usability. Baselines include PRIMERA and dataset-specific models; the human study rates generated \emph{long} summaries on a 0--3 faithfulness scale.
+
+\paragraph{Evidence.}
+On the demanding document-to-long ($D \rightarrow L$) task, the best reported automatic scores are ROUGE-1 = 53.73, ROUGE-2 = 27.32, and ROUGE-L = 30.89 using PRIMERA \cite{shen2022multilexsum,xiao2022primera}. Yet the same paper reports a mean human faithfulness rating of only \textbf{0.43 out of 3.0} for model-generated long summaries, a result the authors themselves describe as near failure. That juxtaposition is the central empirical lesson of the benchmark: \emph{high overlap with reference text does not imply usable legal summaries}.
+
+\paragraph{Critical analysis.}
+Multi-LexSum is indispensable as an evaluation \emph{venue}, but it under-specifies the accountability dimension the thesis targets. The benchmark does not ship a canonical citation graph, a CourtListener-aligned entity inventory, or citation-level labels for hallucination types. Expert summaries presumably cite real cases, but the released evaluation protocol emphasizes n-gram overlap, not verifiable citation extraction. Consequently, a system could ``win'' the leaderboard while inventing plausible-but-fabricated citations, exactly the failure mode Dahl et al.\ document in a different legal task setting \cite{dahl2024largelegalfictions}. The human rating of 0.43 is reported once, on long outputs, without a breakdown by error type (fabrication vs.\ mis-citation vs.\ omission). Treating Multi-LexSum as evidence that ``summarization is solved modulo scale'' would misread the paper's own findings.
+
+\paragraph{Implication for this thesis.}
+Multi-LexSum is adopted as the \emph{primary} summarization benchmark, but evaluation is extended with citation-level HR verified against CourtListener, a dimension the dataset paper leaves open.
+
+\subsection{PRIMERA: long-context MDS without accountability}
+\label{sec:lit-primera}
+
+\paragraph{Problem framing.}
+Xiao et al.\ propose PRIMERA, a Longformer encoder--decoder pre-trained with a pyramid-masked sentence objective (Entity Pyramid) to improve multi-document summarization without bespoke architectures per dataset \cite{xiao2022primera}.
+
+\paragraph{Method and assumptions.}
+The method assumes that modeling inter-document salience via masked pre-training transfers to downstream MDS, including legal cases concatenated into a single long input. Training and inference rely on subword truncation of extremely long inputs; faithfulness to source \emph{citations} is not an optimization target.
+
+\paragraph{Evidence.}
+PRIMERA achieves state-of-the-art ROUGE on Multi-LexSum $D \rightarrow L$ and strong zero/few-shot performance on five other MDS datasets \cite{xiao2022primera}. The Multi-LexSum human faithfulness scores cited above apply to PRIMERA-class outputs \cite{shen2022multilexsum}.
+
+\paragraph{Critical analysis.}
+PRIMERA optimizes \emph{compression} and \emph{lexical overlap}, not legal provenance. Longformer-style models routinely discard tail tokens; in legal dockets, dispositive citations may appear late in the record. The paper's generality claim, one model across six datasets, is scientifically valuable but legally misleading if read as uniform reliability: a model can top the leaderboard on news MDS and still fail on citation integrity in litigation text. PRIMERA has no decoding constraint that forces case names to correspond to retrievable records; post-hoc retrieval (RAG) is orthogonal and insufficient, as commercial legal-tool studies show \cite{magesh2025hallucinationfree}.
+
+\paragraph{Implication for this thesis.}
+PRIMERA (or an equivalent long-context summarizer) is a plausible \textbf{Module A} neural generator, but the thesis treats it as an \emph{untrusted} component whose outputs must pass symbolic verification.
+
+\subsection{ROUGE and BERTScore: metric--faithfulness decoupling}
+\label{sec:lit-metrics}
+
+\paragraph{ROUGE (Lin, 2004).}
+Lin formalized recall-oriented n-gram overlap metrics (ROUGE-N, ROUGE-L, ROUGE-W, ROUGE-S) and demonstrated correlation with human judgments on DUC 2001--2003 newswire summaries \cite{lin2004rouge}. The implicit assumption is that reference summaries are factually faithful and that overlap proxies for informativeness.
+
+\paragraph{BERTScore (Zhang et al., 2020).}
+BERTScore replaces n-grams with contextual embedding similarity, improving correlation with human ratings on machine translation and captioning benchmarks and showing robustness to some adversarial paraphrases \cite{zhang2020bertscore}.
+
+\paragraph{Critical analysis (Maynez et al.\ and Pagnoni et al.).}
+Maynez et al.\ show that abstractive summarizers frequently introduce unsupported entities and relations while achieving competitive ROUGE \cite{maynez2020faithfulness}. Human annotators judge a large fraction of model summaries as unfaithful even when automatic scores look acceptable. Pagnoni et al.\ systematize factuality errors with the FRANK taxonomy (entity, relation, sentence, discourse) and demonstrate that overlap and learned metrics can rank systems incorrectly relative to factuality \cite{pagnoni2021factuality}. Together, these works undermine the thesis that ROUGE/BERTScore \emph{bound} legal risk. In Multi-LexSum, the 0.43/3 faithfulness rating is the legal-domain analogue: semantic similarity to expert text is not professional-grade reliability.
+
+\paragraph{Implication for this thesis.}
+ROUGE and BERTScore are retained as \textbf{secondary} quality indicators, but the review argues they cannot be primary success criteria for legal deployment. Proposed thesis objectives pair them with HR from symbolic citation lookup.
+
+\subsection{LEGAL-BERT: domain adaptation $\neq$ citation faithfulness}
+\label{sec:lit-legalbert}
+
+\paragraph{Problem framing.}
+Chalkidis et al.\ pre-train BERT on large legal corpora (EU legislation, court decisions, contracts) and report gains on legal judgment prediction, semantic segmentation, and related tasks \cite{chalkidis2020legalbert}.
+
+\paragraph{Critical analysis.}
+LEGAL-BERT improves \emph{representations} for legal language; it does not, by itself, enforce that generated citations exist in a case-law database. Domain adaptation addresses vocabulary and genre shift, not hallucination under abstractive decoding. For long MDS, encoder-only models are not summarizers without an additional decoder or prompt-based pipeline; any such pipeline inherits the faithfulness problems documented above. Including LEGAL-BERT clarifies a common conflation in legal NLP proposals: ``legal BERT'' is neither necessary nor sufficient for verifiable summarization.
+
+\paragraph{Implication for this thesis.}
+LEGAL-BERT may inform baselines or auxiliary encoders, but the thesis contribution lies in the \textbf{symbolic verification layer}, not in further domain pre-training alone.

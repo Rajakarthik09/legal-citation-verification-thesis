@@ -1,0 +1,55 @@
+\section{Neuro-Symbolic AI and Faithfulness as a Design Requirement}
+\label{sec:lit-neurosymbolic}
+
+\subsection{The Third AI Summer: from metaphor to legal pipeline (Kautz, 2022)}
+\label{sec:lit-kautz}
+
+\paragraph{Problem framing.}
+Kautz's Engelmore lecture argues that the ``Third AI Summer'' requires integrating neural learning with symbolic reasoning, not scaling transformers alone \cite{kautz2022thirdaisummer}. He taxonomizes six levels of neuro-symbolic coupling and highlights safety-critical and regulated domains as areas where explainability and constraint satisfaction matter.
+
+\paragraph{Evidence and limits.}
+The paper is conceptual: it does not implement legal summarization, measure hallucination rates, or connect to CourtListener-style resources. Its strength is philosophical clarity: pure pattern completion is insufficient when stakes are high.
+
+\paragraph{Critical analysis.}
+Neuro-symbolic AI has a history of aspirational rhetoric with sparse end-to-end benchmarks. Kautz names law as a prime domain but does not supply citation-level evaluation protocols. Without such protocols, ``neuro-symbolic legal AI'' risks becoming a label rather than an engineering discipline. The thesis must therefore \textbf{instantiate} Kautz's dual-system idea with reproducible metrics on Multi-LexSum, not merely cite it.
+
+\paragraph{Implication for this thesis.}
+Module~A (neural summarization) and Module~C (symbolic CourtListener verification) are a concrete Level-2/3 neuro-symbolic architecture: neural generation proposes text; symbolic procedures audit and constrain release.
+
+\subsection{Faithfulness in abstractive summarization (Maynez et al., 2020)}
+
+Maynez et al.\ decompose faithfulness into entailment, QA-based checks, and human evaluation on news summarization \cite{maynez2020faithfulness}. Their central finding, that models introduce unsupported facts at high rates, predates LLM hype but remains decisive: \emph{abstractive compression is inherently risky}. The paper does not use legal citations, yet its logic applies forcefully when summaries reference precedents: a single unsupported citation can mislead more than a vague sentence about ``the plaintiff.''
+
+\subsection{Architectural mapping to the thesis pipeline}
+
+Figure~\ref{fig:lit-architecture} situates reviewed work on a generate--verify--correct axis. Only the thesis target (rightmost column) closes the loop with symbolic correction on a legal MDS benchmark.
+
+\begin{figure}[!t]
+\centering
+\begin{tikzpicture}[
+  font=\small,
+  node distance=9mm,
+  box/.style={draw, rounded corners, align=center, inner sep=5pt, text width=2.6cm},
+  arrow/.style={-Latex, thick}
+]
+\node[box] (bench) {Multi-LexSum\\PRIMERA \cite{shen2022multilexsum,xiao2022primera}};
+\node[box, right=of bench] (rag) {RAG / legal tools\\ \cite{lewis2020rag,magesh2025hallucinationfree}};
+\node[box, right=of rag] (detect) {Detectors\\SelfCheck, HalluGraph\\ \cite{manakul2023selfcheckgpt,noel2025hallugraph}};
+\node[box, right=of detect] (thesis) {Thesis pipeline\\verify + correct\\ \cite{courtlistener_api}};
+
+\draw[arrow] (bench) -- node[above, font=\scriptsize]{generate} (rag);
+\draw[arrow] (rag) -- node[above, font=\scriptsize]{retrieve} (detect);
+\draw[arrow] (detect) -- node[above, font=\scriptsize]{flag only} (thesis);
+
+\node[below=3mm of bench, font=\scriptsize, align=center] {ROUGE-led};
+\node[below=3mm of rag, font=\scriptsize, align=center] {HR 17--43\%};
+\node[below=3mm of detect, font=\scriptsize, align=center] {no rewrite};
+\node[below=3mm of thesis, font=\scriptsize, align=center] {HR + ROUGE};
+\end{tikzpicture}
+\caption{Evolution from benchmark generation (left) to auditable verification and correction (right). Prior work stops at detection or retrieval.}
+\label{fig:lit-architecture}
+\end{figure}
+
+\subsection{Closing argument for neuro-symbolic legal summarization}
+
+Kautz supplies the \emph{why}; Maynez et al.\ supply the \emph{caution}; Multi-LexSum and Dahl/Magesh supply the \emph{empirical stakes}. Together they justify an architecture that is neither ``bigger LLM'' nor ``better ROUGE,'' but a pipeline where neural fluency is gated by symbolic citation truth. The comparative table in Section~\ref{sec:lit-synthesis} makes this gap explicit across all surveyed papers.

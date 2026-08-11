@@ -1,0 +1,28 @@
+# Module C — CourtListener symbolic verifier
+
+rate_limit:
+  # Straight from the account's own dashboard access-level page -- the
+  # authoritative source, superseding every prior guess (a "plain free
+  # account" assumption from THESIS_ROADMAP.md at 125/day, then a 60/min
+  # figure misread out of a captured 429 error message that turned out to
+  # describe a different throttle scope than the per-account one below).
+  valid_citations_per_minute: 10
+  valid_citations_per_hour: 100
+  daily_cap: 250
+
+cache_path: data/processed/citation_cache.sqlite
+# Persists call timestamps across process restarts (RunPod session ends,
+# CourtListener's caps force a pause) so the local limiter can't drift from
+# the server-side quota on any of the three windows above. See
+# src/module_c_verifier/rate_limiter.py.
+rate_limiter_state_path: data/processed/rate_limiter_state.json
+max_correction_iterations: 3
+correction_mode: symbolic
+fuzzy_match_threshold: 85
+
+courtlistener_url: https://www.courtlistener.com/api/rest/v4/citation-lookup/
+
+# LLM rewrite ablation (flan-t5-base on Colab T4, loaded after PRIMERA unload)
+llm_rewrite_model: google/flan-t5-base
+llm_rewrite_max_tokens: 128
+llm_rewrite_device: null  # auto-detect cuda/cpu

@@ -1,0 +1,9 @@
+# Professor demo — 10 validation cases, long granularity
+
+split: validation
+granularity: long
+max_cases: 10
+case_ids: null
+output_dir: outputs/demo_validation_long
+generations_dir: outputs/generations
+reports_dir: outputs/verification_reports

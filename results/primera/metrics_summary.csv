@@ -1,0 +1,5 @@
+condition,n_cases,rouge1_mean,rouge2_mean,rougeL_mean,rougeLsum_mean,hr_micro,hr_macro,hr_paired_micro,hr_surviving_micro,total_citations,bertscore_f1_mean,mean_correction_iters,pct_corrected_within_2_iters
+baseline,100,0.4266,0.1717,0.1995,0.4074,0.8276,0.195,0.8276,0.8276,29,0.8511,0.0,1.0
+flagging,100,0.4266,0.1717,0.1995,0.4074,0.8276,0.195,0.8276,0.8276,29,0.8511,0.0,1.0
+symbolic,100,0.4261,0.1714,0.1995,0.4069,0.4706,0.065,0.2759,0.4706,17,0.8508,0.28,0.95
+llm_rewrite,100,0.425,0.1711,0.1993,0.4055,0.4706,0.065,0.2759,0.4706,17,0.847,0.28,0.95

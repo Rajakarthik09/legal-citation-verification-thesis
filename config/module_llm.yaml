@@ -1,0 +1,18 @@
+# Module A (LLM variant) — instruction-tuned open LLM, cross-model comparison
+# alongside PRIMERA (module_a.yaml). Same verify->correct->evaluate pipeline
+# downstream; only the generator + input truncation strategy differ.
+
+checkpoint: Qwen/Qwen2.5-7B-Instruct  # Apache-2.0, ungated, 32768-token context
+device: cuda
+use_bf16: true
+
+# 8192 vs PRIMERA's architecturally fixed 4096 (see config/module_a.yaml) --
+# a real ablation variable, not an arbitrary bump. Leaves ample headroom
+# under the checkpoint's real 32768-token context once the prompt template
+# and max_new_tokens are added.
+max_input_tokens: 8192
+max_new_tokens: 2000
+target_words: 1500
+temperature: 0.3
+
+output_dir: outputs/generations
