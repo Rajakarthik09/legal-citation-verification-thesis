@@ -63,7 +63,7 @@ Full-scale generation initially produced summaries well short of the $D\rightarr
 
 Listing~\ref{lst:module-a-generate} shows the calibrated call as implemented: the explicit \texttt{min\_new\_tokens} and \texttt{length\_penalty} arguments are the fix, not defaults inherited from the checkpoint.
 
-\begin{lstlisting}[caption={Module~A batch generation call with the length-calibration fix explicit (\texttt{src/module\_a\_summarizer/generate.py}).}, label={lst:module-a-generate}]
+\begin{lstlisting}[caption={Module~A batch generation call with the length-calibration fix explicit (\href{\repourl/blob/main/src/module_a_summarizer/generate.py}{\texttt{src/module\_a\_summarizer/generate.py}}).}, label={lst:module-a-generate}]
 max_new_tokens = config["max_new_tokens"][granularity]
 min_new_tokens = config.get("min_new_tokens", {}).get(granularity)
 length_penalty = config.get("length_penalty", 2.0)  # overrides checkpoint's 0
@@ -106,7 +106,7 @@ Module~B uses eyecite \cite{eyecite2021} to extract \texttt{FullCaseCitation} ob
 
 Listing~\ref{lst:module-b-blank} shows the markup-blanking fix: tags and Markdown emphasis are replaced with equal-length whitespace, not deleted, so every downstream character offset used for redaction or replacement still lines up with the original text.
 
-\begin{lstlisting}[caption={Length-preserving markup blanking before eyecite parsing (\texttt{src/module\_b\_extraction/extract\_citations.py}).}, label={lst:module-b-blank}]
+\begin{lstlisting}[caption={Length-preserving markup blanking before eyecite parsing (\href{\repourl/blob/main/src/module_b_extraction/extract_citations.py}{\texttt{src/module\_b\_extraction/extract\_citations.py}}).}, label={lst:module-b-blank}]
 _MARKUP_RE = re.compile(r"</?i>|</?b>|</?em>|</?strong>|\*\*|<a\s[^>]*>|</a>")
 
 def _blank_markup(text: str) -> str:
@@ -154,7 +154,7 @@ Malformed & Status 400 / unparseable & Redact \\
 
 Listing~\ref{lst:module-c-label} is the code that implements Table~\ref{tab:label-taxonomy} directly: each CourtListener response status maps to exactly one label, and the Verified/Ambiguous split within a status-200 response is decided by \texttt{fields\_match} and the hard-party-contradiction check described below.
 
-\begin{lstlisting}[caption={CourtListener status to taxonomy-label mapping (\texttt{src/module\_c\_verifier/verify.py}).}, label={lst:module-c-label}]
+\begin{lstlisting}[caption={CourtListener status to taxonomy-label mapping (\href{\repourl/blob/main/src/module_c_verifier/verify.py}{\texttt{src/module\_c\_verifier/verify.py}}).}, label={lst:module-c-label}]
 def _label_from_status(status, extracted, cluster, *, fuzzy_threshold):
     if status == 404:
         return "NotFound", "No matching citation in CourtListener's database.", None, None
@@ -240,7 +240,7 @@ where $\texttt{repair}(c \to \mathrm{CL})$ substitutes CourtListener's verified 
 
 Listing~\ref{lst:correction-loop} is the implementation of $a(c)$: each iteration partitions the current verification results into \texttt{bad} (redact), \texttt{fixable} (safe Mismatch repair), and \texttt{reanchors} (Ambiguous with a same-case anchor), builds the corresponding text edits, and re-verifies before deciding whether another iteration is needed.
 
-\begin{lstlisting}[caption={Core of the bounded correction loop implementing $a(c)$ (\texttt{src/correction\_loop/corrector.py}).}, label={lst:correction-loop}]
+\begin{lstlisting}[caption={Core of the bounded correction loop implementing $a(c)$ (\href{\repourl/blob/main/src/correction_loop/corrector.py}{\texttt{src/correction\_loop/corrector.py}}).}, label={lst:correction-loop}]
 for i in range(max_iterations):
     bad = [r for r in results if r.label in ("NotFound", "Malformed")]
     fixable = _safe_mismatch_repairs(results)          # safe Mismatch -> repair
@@ -307,6 +307,21 @@ McNemar's test \cite{mcnemar1947} compares discordant draft/final citation outco
   \item \textbf{Reproducibility:} experiment YAML configs; notebook-driven generation phases (Colab for development, GPU-instance notebooks for the full-scale run); offline reprocess scripts for correction-policy updates without regenerating drafts.
   \item \textbf{Demonstration:} Cursor Canvas replay of saved runs; Streamlit live showcase for one-case CourtListener calls.
 \end{itemize}
+
+\subsection{Code and data availability}
+\label{sec:method-availability}
+
+The full implementation, the evaluation harness, and the aggregate results behind every table and figure in this thesis are available at \href{\repourl}{\repourl}, under an MIT licence for the code. The listings throughout this chapter link directly to the source file they excerpt.
+
+\begin{itemize}
+  \item \textbf{Source code:} \href{\repourl/tree/main/src}{\texttt{src/}}, organized by module: \href{\repourl/tree/main/src/module_a_summarizer}{\texttt{module\_a\_summarizer/}} and \href{\repourl/tree/main/src/module_a_llm}{\texttt{module\_a\_llm/}} (Module~A), \href{\repourl/tree/main/src/module_b_extraction}{\texttt{module\_b\_extraction/}} (Module~B), \href{\repourl/tree/main/src/module_c_verifier}{\texttt{module\_c\_verifier/}} (Module~C), and \href{\repourl/tree/main/src/correction_loop}{\texttt{correction\_loop/}} (Section~\ref{sec:correction}).
+  \item \textbf{Evaluation results:} \href{\repourl/tree/main/results}{\texttt{results/}}, one folder per generator (\texttt{primera/}, \texttt{llm/}, \texttt{llm\_rag/}) plus \texttt{comparison/}, each with the metrics, statistical tests, and RQ answers that back Chapter~\ref{ch:results}.
+  \item \textbf{Live demo:} \href{\repourl/blob/main/demo/live_showcase.py}{\texttt{demo/live\_showcase.py}}, the Streamlit application behind Figures~\ref{fig:live-pipeline-extract-verify} and~\ref{fig:live-pipeline-correction}.
+  \item \textbf{RunPod notebooks and setup docs:} \href{\repourl/tree/main/notebooks}{\texttt{notebooks/}} and \href{\repourl/tree/main/docs}{\texttt{docs/}}, including the full-scale run findings behind Section~\ref{sec:method-compute-cost}.
+  \item \textbf{This document:} \href{\repourl/tree/main/paper}{\texttt{paper/}}, the LaTeX source and compiled PDF.
+\end{itemize}
+
+Multi-LexSum itself, and any generated summary text derived from it, are not included in the repository: the dataset is licensed CC~BY-NC by its original authors (Section~\ref{sec:data-multilexsum}), so only aggregate statistics are published. Cloning the repository and following \texttt{docs/RUNPOD\_SETUP.md} reproduces the full pipeline against a fresh copy of the dataset obtained directly from its Hugging Face release.
 
 \subsection{Live pipeline demonstration}
 \label{sec:method-live-demo}
